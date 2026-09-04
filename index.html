@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>巢藝設計｜線上預約</title>
+<style>
+:root{
+  --bg:#f5f3ef; --card:#fff; --ink:#24211d; --muted:#756f68;
+  --line:#ded8cf; --accent:#5b4a3a; --accent2:#8f7963; --ok:#2f6e50;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;background:var(--bg);color:var(--ink)}
+header{background:#201d1a;color:white;padding:22px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;position:sticky;top:0;z-index:10}
+.brand{font-weight:700;letter-spacing:.12em}.brand small{display:block;font-weight:400;color:#cbc3bb;letter-spacing:.05em;margin-top:4px}
+nav button{border:0;background:transparent;color:#d9d2cb;padding:10px 12px;cursor:pointer;border-radius:8px}
+nav button.active,nav button:hover{background:#37312c;color:white}
+main{max-width:1120px;margin:34px auto;padding:0 20px}
+.hero{display:grid;grid-template-columns:1.35fr .65fr;gap:22px;margin-bottom:24px}
+.hero-card,.info-card,.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 8px 24px rgba(44,37,30,.04)}
+.hero-card{padding:34px}.hero-card h1{font-size:34px;margin:0 0 14px}.hero-card p{color:var(--muted);line-height:1.8;margin:0}
+.info-card{padding:28px;background:#ece6de}.info-card h3{margin-top:0}.info-card p{margin:.6em 0;color:#5f554b;line-height:1.6}
+.panel{padding:28px}.panel h2{margin-top:0;font-size:22px}
+.stepper{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap}
+.step{padding:8px 12px;border-radius:999px;border:1px solid var(--line);color:var(--muted);font-size:14px}
+.step.on{background:var(--accent);color:white;border-color:var(--accent)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.field label{display:block;font-size:14px;margin-bottom:7px;color:#4c453f}
+input,select,textarea{width:100%;padding:13px 14px;border:1px solid #cfc7be;border-radius:10px;background:white;font:inherit;color:var(--ink)}
+textarea{min-height:104px;resize:vertical}.full{grid-column:1/-1}
+.services{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.service{border:1px solid var(--line);background:white;border-radius:14px;padding:18px;text-align:left;cursor:pointer}
+.service strong{display:block;margin-bottom:6px}.service span{color:var(--muted);font-size:13px;line-height:1.5}
+.service.selected{border:2px solid var(--accent);background:#f7f2ec}
+.calendar-wrap{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.calendar{border:1px solid var(--line);border-radius:14px;padding:16px}.cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.days,.dates{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center}.days div{font-size:12px;color:var(--muted);padding:7px}
+.date{padding:10px 0;border-radius:9px;cursor:pointer}.date.muted{color:#bbb}.date:hover{background:#eee8e1}.date.selected{background:var(--accent);color:white}
+.slots{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.slot{border:1px solid var(--line);background:white;border-radius:10px;padding:12px;cursor:pointer}.slot.selected{background:var(--accent);color:white;border-color:var(--accent)}.slot.disabled{opacity:.35;cursor:not-allowed}
+.actions{display:flex;justify-content:flex-end;gap:10px;margin-top:24px}.btn{border:0;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer}.btn.primary{background:var(--accent);color:white}.btn.ghost{background:#eee8e1;color:#4e453d}
+.notice{padding:14px 16px;border-radius:10px;background:#edf6f0;color:#275a42;margin-top:14px;display:none}
+.booking{display:block}
+table{width:100%;border-collapse:collapse;margin-top:10px}th,td{padding:13px 10px;border-bottom:1px solid var(--line);text-align:left;font-size:14px}th{color:var(--muted);font-weight:600}
+.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#eee8e1}.badge.ok{background:#e6f1ea;color:#2f6e50}
+.summary{background:#f8f6f2;border:1px solid var(--line);padding:18px;border-radius:12px;line-height:1.8}
+footer{text-align:center;color:#8a827a;padding:38px 10px 50px;font-size:13px}
+@media(max-width:800px){.hero,.calendar-wrap,.grid{grid-template-columns:1fr}.services{grid-template-columns:1fr}.hero-card h1{font-size:28px}header{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">巢藝設計有限公司<small>INTERIOR DESIGN APPOINTMENT</small></div>
+  <nav>
+    <span style="color:#d9d2cb;font-size:14px">線上預約</span>
+    
+  </nav>
+</header>
+
+<main>
+<section class="booking active" id="booking">
+  <div class="hero">
+    <div class="hero-card">
+      <h1>線上預約設計諮詢</h1>
+      <p>選擇您需要的服務、日期與時段，留下案場基本資訊後即可完成預約。正式會議時間將由專人再次確認。</p>
+    </div>
+    <div class="info-card">
+      <h3>預約前提醒</h3>
+      <p>服務區域：雙北／桃園／宜蘭</p>
+      <p>工程預算建議：NT$120 萬起（不含家電、空調）</p>
+      <p>丈量服務：NT$3,500，簽設計約可折抵</p><p>初步諮詢與現場丈量限平日；設計會議週六亦可預約。</p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="stepper">
+      <span class="step on">1 服務項目</span><span class="step on">2 日期時段</span><span class="step on">3 客戶資料</span><span class="step on">4 完成預約</span>
+    </div>
+
+    <h2>選擇服務項目</h2>
+    <div class="services">
+      <button class="service selected" data-service="初步諮詢" onclick="selectService(this)"><strong>初步諮詢</strong><span>未簽約客戶</span></button>
+      <button class="service" data-service="現場丈量" onclick="selectService(this)"><strong>現場丈量</strong><span>至案場丈量並確認現況條件，丈量費 NT$3,500。丈量僅開放週一至週五。</span></button>
+      <button class="service" data-service="設計會議" onclick="selectService(this)"><strong>設計會議</strong><span>已簽約客戶討論設計圖面、報價及選材</span></button>
+    </div>
+
+    
+
+    <h2 style="margin-top:28px">填寫預約資料</h2>
+    <div class="grid">
+      <div class="field"><label>名字 *</label><input id="name" placeholder="請輸入名字"></div>
+      <div class="field"><label>電話 *</label><input id="phone" placeholder="請輸入聯絡電話"></div>
+      <div class="field full"><label>建案名稱 *</label><input id="projectName" placeholder="請輸入建案名稱"></div>
+    </div>
+
+    <h2 style="margin-top:28px">選擇日期與時段</h2>
+    <div class="calendar-wrap">
+      <div class="calendar">
+        <div class="cal-head"><button class="btn ghost" onclick="shiftMonth(-1)">‹</button><strong id="monthLabel"></strong><button class="btn ghost" onclick="shiftMonth(1)">›</button></div>
+        <div class="days"><div>日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div></div>
+        <div class="dates" id="dates"></div>
+      </div>
+      <div>
+        <h3 style="margin-top:0">可預約時段</h3>
+        <div class="slots" id="slots">
+          <button class="slot" onclick="selectSlot(this)">10:00</button>
+          <button class="slot" onclick="selectSlot(this)">14:00</button>
+          <button class="slot" onclick="selectSlot(this)">18:00</button>
+        </div>
+        <p style="color:var(--muted);font-size:13px;margin-top:12px">每日開放 10:00、14:00、18:00。初步諮詢、現場丈量僅開放週一至週五；設計會議可預約週一至週六；週日不開放。每個日期最多接受 1 場預約，額滿後整天自動關閉。</p>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn primary" onclick="submitBooking()">送出預約</button>
+    </div>
+    <div id="notice" class="notice"></div>
+  </div>
+</section>
+
+</main>
+
+<footer>© 2026 巢藝設計有限公司｜線上預約系統</footer>
+
+<script>
+const SUPABASE_URL='https://fswzgoobhdilyunipowb.supabase.co';
+const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZzd3pnb29iaGRpbHl1bmlwb3diIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0MjUyNjQsImV4cCI6MjEwNDAwMTI2NH0.ud-lArAq8ChHse5ykIb7sb2xWQWCYnDruT1Q1RZpK2I';
+const API_HEADERS={
+  'apikey':SUPABASE_ANON_KEY,
+  'Authorization':`Bearer ${SUPABASE_ANON_KEY}`,
+  'Content-Type':'application/json'
+};
+
+let selectedService='初步諮詢', selectedDate='', selectedSlot='';
+let viewDate=new Date();
+viewDate=new Date(viewDate.getFullYear(),viewDate.getMonth(),1);
+let bookedDates = new Set();
+let loadingCalendar=false;
+
+function toSlash(ds){ return ds.replaceAll('-','/'); }
+function toDash(ds){ return ds.replaceAll('/','-'); }
+function isoLocalDate(d){
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+async function loadUnavailableDates(){
+  loadingCalendar=true;
+  renderCalendar();
+  const y=viewDate.getFullYear(), m=viewDate.getMonth();
+  const start=`${y}-${String(m+1).padStart(2,'0')}-01`;
+  const lastDay=new Date(y,m+1,0).getDate();
+  const end=`${y}-${String(m+1).padStart(2,'0')}-${String(lastDay).padStart(2,'0')}`;
+  try{
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/rpc/get_unavailable_dates`,{
+      method:'POST',headers:API_HEADERS,body:JSON.stringify({p_start:start,p_end:end})
+    });
+    if(!res.ok) throw new Error(await res.text());
+    const rows=await res.json();
+    bookedDates=new Set(rows.map(r=>toSlash(r.unavailable_date)));
+  }catch(err){
+    console.error(err);
+    showNotice('目前無法載入預約狀態，請稍後再試。',false);
+  }finally{
+    loadingCalendar=false;
+    renderCalendar();
+  }
+}
+
+function selectService(el){
+  document.querySelectorAll('[data-service]').forEach(x=>x.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedService=el.dataset.service;
+  selectedDate='';
+  renderCalendar();
+}
+function selectSlot(el){
+  if(el.disabled)return;
+  document.querySelectorAll('.slot').forEach(x=>x.classList.remove('selected'));
+  el.classList.add('selected'); selectedSlot=el.textContent.trim();
+}
+async function shiftMonth(n){
+  viewDate=new Date(viewDate.getFullYear(),viewDate.getMonth()+n,1);
+  selectedDate='';
+  await loadUnavailableDates();
+}
+function renderCalendar(){
+  const y=viewDate.getFullYear(),m=viewDate.getMonth();
+  document.getElementById('monthLabel').textContent=`${y} 年 ${m+1} 月${loadingCalendar?'（載入中）':''}`;
+  const first=new Date(y,m,1).getDay(), last=new Date(y,m+1,0).getDate(), prevLast=new Date(y,m,0).getDate();
+  const today=isoLocalDate(new Date());
+  let html='';
+  for(let i=first-1;i>=0;i--) html+=`<div class="date muted">${prevLast-i}</div>`;
+  for(let d=1;d<=last;d++){
+    const dash=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const ds=toSlash(dash);
+    const dow = new Date(y,m,d).getDay();
+    const isSunday = dow===0;
+    const isSaturday = dow===6;
+    const isWeekend = isSunday || isSaturday;
+    const isMeasurement = selectedService==='現場丈量';
+    const isInitialConsultation = selectedService==='初步諮詢';
+    const isBooked = bookedDates.has(ds);
+    const isPast = dash < today;
+
+    if(isPast){
+      html+=`<div class="date muted" style="cursor:not-allowed">${d}</div>`;
+    } else if(isMeasurement && isWeekend){
+      html+=`<div class="date muted" style="cursor:not-allowed;text-decoration:line-through" title="現場丈量僅開放平日">${d}<span style="display:block;font-size:10px">丈量關閉</span></div>`;
+    } else if(isInitialConsultation && isSaturday){
+      html+=`<div class="date muted" style="cursor:not-allowed;text-decoration:line-through" title="初步諮詢週六不開放">${d}<span style="display:block;font-size:10px">諮詢關閉</span></div>`;
+    } else if(isSunday){
+      html+=`<div class="date muted" style="cursor:not-allowed;text-decoration:line-through" title="週日不開放預約">${d}</div>`;
+    } else if(isBooked){
+      html+=`<div class="date muted" style="cursor:not-allowed;background:#eee8e1" title="當日已有預約或不開放">${d}<span style="display:block;font-size:10px">已滿</span></div>`;
+    } else {
+      html+=`<div class="date ${selectedDate===ds?'selected':''}" onclick="pickDate('${ds}',this)">${d}</div>`;
+    }
+  }
+  const total=first+last, remain=(7-total%7)%7;
+  for(let d=1;d<=remain;d++) html+=`<div class="date muted">${d}</div>`;
+  document.getElementById('dates').innerHTML=html;
+}
+function pickDate(ds,el){
+  selectedDate=ds; document.querySelectorAll('.date').forEach(x=>x.classList.remove('selected')); el.classList.add('selected');
+}
+function showNotice(message,ok=true){
+  const n=document.getElementById('notice');
+  n.style.display='block';
+  n.style.background=ok?'#edf6f0':'#fff0ee';
+  n.style.color=ok?'#275a42':'#8b3d32';
+  n.innerHTML=message;
+}
+async function submitBooking(){
+  const name=document.getElementById('name').value.trim(), phone=document.getElementById('phone').value.trim();
+  const projectName=document.getElementById('projectName').value.trim();
+  if(!selectedDate||!selectedSlot||!name||!phone||!projectName){
+    showNotice('請先完成日期、時段、名字、電話與建案名稱欄位。',false); return;
+  }
+  const btn=document.querySelector('.btn.primary');
+  btn.disabled=true; btn.textContent='送出中…';
+  try{
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/rpc/create_booking`,{
+      method:'POST',headers:API_HEADERS,body:JSON.stringify({
+        p_booking_date:toDash(selectedDate),
+        p_booking_time:selectedSlot,
+        p_service:selectedService,
+        p_customer_name:name,
+        p_phone:phone,
+        p_project_name:projectName
+      })
+    });
+    if(!res.ok){
+      const raw=await res.text();
+      let msg='預約送出失敗，請稍後再試。';
+      if(raw.includes('此日期已有預約')) msg='這個日期剛剛已被其他客戶預約，請改選其他日期。';
+      else if(raw.includes('此日期不開放預約')) msg='此日期目前不開放預約，請改選其他日期。';
+      throw new Error(msg);
+    }
+    const bookedDate=selectedDate, bookedSlot=selectedSlot, service=selectedService;
+    bookedDates.add(bookedDate);
+    selectedDate=''; selectedSlot='';
+    document.querySelectorAll('.slot').forEach(x=>x.classList.remove('selected'));
+    renderCalendar();
+    showNotice(`預約已送出：<strong>${bookedDate} ${bookedSlot}</strong>｜${service}<br>我們會再與您確認正式會議時間。`,true);
+  }catch(err){
+    console.error(err);
+    showNotice(err.message || '預約送出失敗，請稍後再試。',false);
+    await loadUnavailableDates();
+  }finally{
+    btn.disabled=false; btn.textContent='送出預約';
+  }
+}
+
+loadUnavailableDates();
+</script>
+</body>
+</html>
