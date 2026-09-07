@@ -12,8 +12,8 @@
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}.stat{background:#f8f6f2;border:1px solid var(--line);border-radius:14px;padding:16px}.stat b{display:block;font-size:26px;margin-top:6px}.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.section-head h2{margin:0}
 .toolbar{display:grid;grid-template-columns:1.3fr .8fr .8fr auto;gap:10px;align-items:end;margin-bottom:16px}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}table{width:100%;border-collapse:collapse;min-width:1080px}th,td{padding:12px 10px;border-bottom:1px solid var(--line);text-align:left;font-size:14px;vertical-align:middle}th{background:#f8f6f2;color:var(--muted)}.badge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:12px}.pending{background:#f4ead8;color:#7f5b20}.confirmed{background:#e5f1e9;color:#2f6e50}.cancelled{background:#eee;color:#777}.row-actions{display:flex;gap:6px;flex-wrap:wrap}
 .schedule-top{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:end}.slot-form{display:grid;grid-template-columns:.7fr 1.4fr .8fr 1.1fr auto;gap:10px;align-items:end;margin-top:16px}.checks{display:flex;gap:10px;flex-wrap:wrap;padding:8px 0}.checks label{display:flex;gap:6px;align-items:center;margin:0}.checks input{width:auto}.slot-list{display:grid;gap:8px;margin-top:14px}.slot-item{display:grid;grid-template-columns:90px 1fr auto;gap:10px;align-items:center;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:#faf8f5}.slot-item.closed{opacity:.6}.slot-meta{font-size:13px;color:var(--muted)}.batch{display:grid;grid-template-columns:1fr 1fr .7fr 1.2fr auto;gap:10px;align-items:end;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}.weekday-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.weekday-row label{display:flex;gap:4px;align-items:center;margin:0;font-size:13px}.weekday-row input{width:auto}
-.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.content-field{border:1px solid var(--line);border-radius:12px;padding:12px;background:#faf8f5}.content-field textarea{width:100%;min-height:110px;resize:vertical;line-height:1.7;white-space:pre-wrap}.content-field .toggle{display:flex;align-items:center;gap:7px;margin-top:8px;font-size:13px;color:var(--muted)}.content-field .toggle input{width:auto}.content-actions{display:flex;justify-content:flex-end;margin-top:14px}.month-manage{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:end;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}
-@media(max-width:850px){header{flex-direction:column}.stats{grid-template-columns:1fr 1fr}.toolbar,.schedule-top,.month-manage,.slot-form,.batch{grid-template-columns:1fr}.slot-item{grid-template-columns:1fr}.card{padding:18px}.table-wrap{border:0;overflow:visible}table{min-width:0}thead{display:none}tbody,tr,td{display:block;width:100%}tr{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:12px}td{border:0;padding:6px 4px;font-size:14px}td:nth-child(1)::before{content:"日期："}td:nth-child(2)::before{content:"時段："}td:nth-child(3)::before{content:"服務："}td:nth-child(4)::before{content:"姓名："}td:nth-child(5)::before{content:"電話："}td:nth-child(6)::before{content:"建案："}td:nth-child(7)::before{content:"地址："}td:nth-child(8)::before{content:"狀態："}td::before{font-weight:700;color:var(--muted)}td:last-child{padding-top:10px}.row-actions{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.row-actions button{width:100%;min-height:42px}.section-head{align-items:flex-start;flex-direction:column}#adminView>.card:first-of-type>div[style]{grid-template-columns:1fr!important}.content-grid{grid-template-columns:1fr}}
+.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.content-field{border:1px solid var(--line);border-radius:12px;padding:12px;background:#faf8f5}.content-field textarea{width:100%;min-height:110px;resize:vertical;line-height:1.7;white-space:pre-wrap}.style-grid{display:grid;grid-template-columns:1.1fr .8fr .8fr .8fr;gap:8px;margin-top:10px}.style-grid label{margin:0}.style-grid input,.style-grid select{margin-top:6px}.color-row{display:grid;grid-template-columns:52px 1fr;gap:8px;align-items:center}.color-row input[type=color]{padding:2px;height:42px}.content-field .toggle{display:flex;align-items:center;gap:7px;margin-top:8px;font-size:13px;color:var(--muted)}.content-field .toggle input{width:auto}.content-actions{display:flex;justify-content:flex-end;margin-top:14px}.month-manage{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:end;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}
+@media(max-width:850px){header{flex-direction:column}.stats{grid-template-columns:1fr 1fr}.toolbar,.schedule-top,.month-manage,.slot-form,.batch{grid-template-columns:1fr}.slot-item{grid-template-columns:1fr}.card{padding:18px}.table-wrap{border:0;overflow:visible}table{min-width:0}thead{display:none}tbody,tr,td{display:block;width:100%}tr{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:12px}td{border:0;padding:6px 4px;font-size:14px}td:nth-child(1)::before{content:"日期："}td:nth-child(2)::before{content:"時段："}td:nth-child(3)::before{content:"服務："}td:nth-child(4)::before{content:"姓名："}td:nth-child(5)::before{content:"電話："}td:nth-child(6)::before{content:"建案："}td:nth-child(7)::before{content:"地址："}td:nth-child(8)::before{content:"狀態："}td::before{font-weight:700;color:var(--muted)}td:last-child{padding-top:10px}.row-actions{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.row-actions button{width:100%;min-height:42px}.section-head{align-items:flex-start;flex-direction:column}#adminView>.card:first-of-type>div[style]{grid-template-columns:1fr!important}.content-grid{grid-template-columns:1fr}.style-grid{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
@@ -97,8 +97,55 @@ $('logoutBtn').onclick=async()=>{await sb.auth.signOut();location.reload()};
 sb.auth.onAuthStateChange((event,session)=>{if(event==='PASSWORD_RECOVERY'&&session){setTimeout(()=>{init();const el=$('newPassword');if(el){el.focus();window.scrollTo({top:0,behavior:'smooth'})}},0)}else if(event==='SIGNED_IN'&&session){setTimeout(init,0)}});
 $('setPasswordBtn').onclick=async()=>{const p=$('newPassword').value,c=$('confirmPassword').value;if(p.length<8)return notice($('passwordNotice'),'密碼至少需要 8 個字元。',true);if(p!==c)return notice($('passwordNotice'),'兩次輸入的密碼不一致。',true);$('setPasswordBtn').disabled=true;const {error}=await sb.auth.updateUser({password:p});$('setPasswordBtn').disabled=false;if(error)return notice($('passwordNotice'),'密碼設定失敗：'+error.message,true);$('newPassword').value='';$('confirmPassword').value='';notice($('passwordNotice'),'密碼設定完成。之後可直接使用 Email＋密碼登入。')};
 
-async function loadSiteContent(){const {data,error}=await sb.from('site_content').select('*').order('sort_order');if(error){$('siteContentFields').innerHTML='<span class="muted">網站文字設定尚未啟用。</span>';return}siteContent=data||[];$('siteContentFields').innerHTML=siteContent.map(r=>r.key==='booking_min_days'?`<div class="content-field"><label>${esc(r.label)}</label><input type="number" min="0" max="90" step="1" data-content-key="${esc(r.key)}" value="${esc(r.value)}"><div class="muted">例如填 14：今天起算 14 天內不可預約，最早可約第 14 天。</div></div>`:`<div class="content-field"><label>${esc(r.label)}</label><textarea data-content-key="${esc(r.key)}">${esc(r.value)}</textarea><div class="muted" style="font-size:12px;margin-top:6px">需要分段時直接按 Enter 換行，前台會保留換行。</div><label class="toggle"><input type="checkbox" data-content-enabled="${esc(r.key)}" ${r.enabled?'checked':''}> 顯示這段文字</label></div>`).join('')}
-$('saveContentBtn').onclick=async()=>{if(!siteContent.length)return notice($('contentNotice'),'網站文字設定尚未啟用。',true);const payload=siteContent.map(r=>({key:r.key,label:r.label,value:(document.querySelector(`[data-content-key="${r.key}"]`)?.value||'').trim(),enabled:r.key==='booking_min_days'?true:!!document.querySelector(`[data-content-enabled="${r.key}"]`)?.checked,sort_order:r.sort_order,updated_at:new Date().toISOString()}));$('saveContentBtn').disabled=true;const {error}=await sb.from('site_content').upsert(payload,{onConflict:'key'});$('saveContentBtn').disabled=false;if(error)return notice($('contentNotice'),'儲存失敗：'+error.message,true);notice($('contentNotice'),'已儲存，客戶預約頁重新整理後就會顯示最新文字。');await loadSiteContent()};
+async function loadSiteContent(){
+  const {data,error}=await sb.from('site_content').select('*').order('sort_order');
+  if(error){$('siteContentFields').innerHTML='<span class="muted">網站文字設定尚未啟用。</span>';return}
+  siteContent=data||[];
+  $('siteContentFields').innerHTML=siteContent.map(r=>{
+    if(r.key==='booking_min_days')return `<div class="content-field"><label>${esc(r.label)}</label><input type="number" min="0" max="90" step="1" data-content-key="${esc(r.key)}" value="${esc(r.value)}"><div class="muted">例如填 14：今天起算 14 天內不可預約，最早可約第 14 天。</div></div>`;
+    const ff=esc(r.font_family||'system');
+    const fs=Number(r.font_size||0)||'';
+    const fw=String(r.font_weight||'400');
+    const lh=Number(r.line_height||1.8);
+    const tc=esc(r.text_color||'#24211d');
+    return `<div class="content-field">
+      <label>${esc(r.label)}</label>
+      <textarea data-content-key="${esc(r.key)}">${esc(r.value)}</textarea>
+      <div class="muted" style="font-size:12px;margin-top:6px">需要分段時直接按 Enter 換行，前台會保留換行。</div>
+      <div class="style-grid">
+        <label>字體<select data-font-family="${esc(r.key)}"><option value="system" ${ff==='system'?'selected':''}>系統黑體</option><option value="noto" ${ff==='noto'?'selected':''}>Noto Sans TC</option><option value="microsoft" ${ff==='microsoft'?'selected':''}>微軟正黑體</option><option value="serif" ${ff==='serif'?'selected':''}>明體／襯線體</option></select></label>
+        <label>大小 px<input type="number" min="10" max="72" step="1" data-font-size="${esc(r.key)}" value="${fs}" placeholder="預設"></label>
+        <label>粗細<select data-font-weight="${esc(r.key)}"><option value="400" ${fw==='400'?'selected':''}>一般</option><option value="500" ${fw==='500'?'selected':''}>中等</option><option value="700" ${fw==='700'?'selected':''}>粗體</option></select></label>
+        <label>行距<select data-line-height="${esc(r.key)}"><option value="1.4" ${lh==1.4?'selected':''}>1.4</option><option value="1.6" ${lh==1.6?'selected':''}>1.6</option><option value="1.8" ${lh==1.8?'selected':''}>1.8</option><option value="2" ${lh==2?'selected':''}>2.0</option></select></label>
+      </div>
+      <label style="margin-top:10px">文字顏色</label><div class="color-row"><input type="color" data-text-color="${esc(r.key)}" value="${tc}"><input type="text" data-text-color-text="${esc(r.key)}" value="${tc}" placeholder="#24211d"></div>
+      <label class="toggle"><input type="checkbox" data-content-enabled="${esc(r.key)}" ${r.enabled?'checked':''}> 顯示這段文字</label>
+    </div>`
+  }).join('');
+  document.querySelectorAll('[data-text-color]').forEach(c=>{const k=c.dataset.textColor,txt=document.querySelector(`[data-text-color-text="${k}"]`);c.oninput=()=>txt.value=c.value;txt.onchange=()=>{if(/^#[0-9a-fA-F]{6}$/.test(txt.value.trim()))c.value=txt.value.trim()}})
+}
+$('saveContentBtn').onclick=async()=>{
+  if(!siteContent.length)return notice($('contentNotice'),'網站文字設定尚未啟用。',true);
+  $('saveContentBtn').disabled=true;notice($('contentNotice'),'儲存中…');
+  try{
+    for(const r of siteContent){
+      const value=(document.querySelector(`[data-content-key="${r.key}"]`)?.value||'').trim();
+      const args={p_key:r.key,p_value:value,p_enabled:r.key==='booking_min_days'?true:!!document.querySelector(`[data-content-enabled="${r.key}"]`)?.checked};
+      if(r.key!=='booking_min_days'){
+        args.p_font_family=document.querySelector(`[data-font-family="${r.key}"]`)?.value||'system';
+        const fs=document.querySelector(`[data-font-size="${r.key}"]`)?.value;
+        args.p_font_size=fs?Number(fs):null;
+        args.p_font_weight=document.querySelector(`[data-font-weight="${r.key}"]`)?.value||'400';
+        args.p_line_height=Number(document.querySelector(`[data-line-height="${r.key}"]`)?.value||1.8);
+        const raw=(document.querySelector(`[data-text-color-text="${r.key}"]`)?.value||'#24211d').trim();
+        args.p_text_color=/^#[0-9a-fA-F]{6}$/.test(raw)?raw:'#24211d';
+      }
+      const {data,error}=await sb.rpc('admin_save_site_content_v2',args);if(error)throw error;if(data!==true)throw new Error('資料庫沒有確認更新');
+    }
+    await loadSiteContent();
+    notice($('contentNotice'),'已成功儲存。重新載入後仍會保留最新內容與文字樣式。');
+  }catch(e){notice($('contentNotice'),'儲存失敗：'+e.message,true)}finally{$('saveContentBtn').disabled=false}
+};
 
 async function init(){const {data:{session}}=await sb.auth.getSession();if(!session)return;$('loginView').classList.add('hidden');$('adminView').classList.remove('hidden');$('logoutBtn').classList.remove('hidden');$('who').textContent=session.user.email||'';const {data:ok,error}=await sb.rpc('is_admin');if(error||!ok){await sb.auth.signOut();location.reload();return}const today=ymd(new Date());$('manageDate').value=today;$('manageMonth').value=today.slice(0,7);$('batchStart').value=today;$('batchEnd').value=today;await loadAll()}
 async function loadAll(){await Promise.all([loadBookings(),loadDay(),loadBlocked(),loadSiteContent()])}
