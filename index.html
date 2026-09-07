@@ -15,20 +15,20 @@
 <body>
 <header><div class="brand">巢藝設計有限公司<small>INTERIOR DESIGN APPOINTMENT</small></div></header>
 <main>
-<div class="hero"><div class="hero-card"><h1 id="heroTitle">線上預約設計諮詢</h1><p id="heroText">選擇服務、日期與開放時段，填寫資料後即可送出預約。日期與時間會依設計部實際排程彈性開放。</p></div><div class="info-card"><h3 id="reminderTitle">預約前提醒</h3><p id="serviceArea">服務區域：雙北／桃園／宜蘭</p><p id="budgetNote">工程預算建議：NT$120 萬起（不含家電、空調）</p><p id="measureNote">丈量服務：NT$3,500，簽設計約可折抵</p></div></div>
+<div class="hero"><div class="hero-card"><h1 id="heroTitle">線上預約設計諮詢</h1><p id="heroText">選擇服務、日期與開放時段，填寫資料後即可送出預約。日期與時間會依設計部實際排程彈性開放。</p></div><div class="info-card"><h3 id="reminderTitle">預約前提醒</h3><p id="serviceArea"></p><p id="budgetNote"></p><p id="measureNote"></p></div></div>
 <div class="panel">
 <h2>選擇服務項目</h2>
 <div class="services">
-<button type="button" class="service selected" data-service="初步諮詢"><strong>初步諮詢</strong><span id="consultDesc">未簽約客戶</span></button>
-<button type="button" class="service" data-service="現場丈量"><strong>現場丈量</strong><span id="measureDesc">至案場丈量並確認現況條件，丈量費 NT$3,500。</span></button>
-<button type="button" class="service" data-service="設計會議"><strong>設計會議</strong><span id="meetingDesc">已簽約客戶討論設計圖面、報價及選材</span></button>
+<button type="button" class="service selected" data-service="初步諮詢"><strong>初步諮詢</strong><span id="consultDesc"></span></button>
+<button type="button" class="service" data-service="現場丈量"><strong>現場丈量</strong><span id="measureDesc"></span></button>
+<button type="button" class="service" data-service="設計會議"><strong>設計會議</strong><span id="meetingDesc"></span></button>
 </div>
 <h2 style="margin-top:28px">填寫預約資料</h2>
 <div class="grid"><div class="field"><label>名字 *</label><input id="name" placeholder="請輸入名字"></div><div class="field"><label>電話 *</label><input id="phone" placeholder="請輸入聯絡電話"></div><div class="field"><label>建案名稱 *</label><input id="projectName" placeholder="請輸入建案名稱"></div><div class="field"><label>地址 *</label><input id="address" placeholder="請輸入案場／會議相關地址"></div></div>
 <h2 style="margin-top:28px">選擇日期與時段</h2>
 <div class="calendar-wrap"><div class="calendar"><div class="cal-head"><button type="button" class="btn ghost" id="prevMonth">‹</button><strong id="monthLabel"></strong><button type="button" class="btn ghost" id="nextMonth">›</button></div><div class="days"><div>日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div></div><div class="dates" id="dates"></div></div><div><h3 style="margin-top:0">可預約時段</h3><div class="slots" id="slots"></div><p class="emptySlots" id="slotHint">請先選擇有開放時段的日期。</p></div></div>
 <div class="actions"><button type="button" class="btn primary" id="submitBtn">送出預約</button></div><div id="notice" class="notice"></div>
-</div></main><footer id="footerText">© 2026 巢藝設計有限公司｜線上預約系統</footer>
+</div></main><footer id="footerText"></footer>
 <script>
 const SUPABASE_URL='https://fswzgoobhdilyunipowb.supabase.co';
 const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZzd3pnb29iaGRpbHl1bmlwb3diIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0MjUyNjQsImV4cCI6MjEwNDAwMTI2NH0.ud-lArAq8ChHse5ykIb7sb2xWQWCYnDruT1Q1RZpK2I';
@@ -38,9 +38,9 @@ let selectedService='初步諮詢',selectedDate='',selectedSlot='',openRows=[];l
 const iso=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 function showNotice(msg,ok=true){const n=$('notice');n.style.display='block';n.style.background=ok?'#edf6f0':'#fff0ee';n.style.color=ok?'#275a42':'#8b3d32';n.innerHTML=msg}function safeText(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])).replace(/\r?\n/g,'<br>')}
 const contentMap={hero_title:'heroTitle',hero_text:'heroText',reminder_title:'reminderTitle',service_area:'serviceArea',budget_note:'budgetNote',measure_note:'measureNote',consult_desc:'consultDesc',measure_desc:'measureDesc',meeting_desc:'meetingDesc',footer_text:'footerText'};
-let successMessage='我們會再與您確認正式時間。';
+let successMessage='';
 function applyContentStyle(el,row){if(!el)return;const fonts={system:'"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif',noto:'"Noto Sans TC",sans-serif',microsoft:'"Microsoft JhengHei","PingFang TC",sans-serif',serif:'"Noto Serif TC","PMingLiU","Times New Roman",serif'};el.style.fontFamily=fonts[row.font_family]||fonts.system;if(row.font_size)el.style.fontSize=Number(row.font_size)+'px';else el.style.removeProperty('font-size');el.style.fontWeight=row.font_weight||'400';el.style.lineHeight=String(row.line_height||1.8);if(row.text_color)el.style.color=row.text_color}
-async function loadSiteContent(){const {data,error}=await sb.from('site_content').select('*').order('sort_order');if(error){console.warn('site content unavailable',error);return}for(const row of data||[]){if(row.key==='success_message'){if(row.enabled&&row.value)successMessage=row.value;continue}const id=contentMap[row.key],el=id&&$(id);if(!el)continue;if(row.value!==null)el.textContent=row.value;el.classList.toggle('content-hidden',row.enabled===false);applyContentStyle(el,row)}}
+async function loadSiteContent(){for(const id of Object.values(contentMap)){const el=$(id);if(el){el.textContent='';el.classList.add('content-hidden')}}successMessage='';const {data,error}=await sb.from('site_content').select('*').order('sort_order');if(error){console.warn('site content unavailable',error);return}for(const row of data||[]){if(row.key==='success_message'){if(row.enabled)successMessage=row.value||'';continue}const id=contentMap[row.key],el=id&&$(id);if(!el)continue;el.textContent=row.value??'';el.classList.toggle('content-hidden',row.enabled===false);applyContentStyle(el,row)}}
 function monthRange(){const y=viewDate.getFullYear(),m=viewDate.getMonth(),last=new Date(y,m+1,0).getDate();return [`${y}-${pad(m+1)}-01`,`${y}-${pad(m+1)}-${pad(last)}`]}
 async function loadMonth(){selectedDate='';selectedSlot='';$('slots').innerHTML='';$('slotHint').style.display='block';const [p_start,p_end]=monthRange();const {data,error}=await sb.rpc('get_open_slots_v2',{p_start,p_end,p_service:selectedService});if(error){console.error(error);openRows=[];renderCalendar();return showNotice('目前無法載入可預約時段：'+error.message,false)}openRows=data||[];renderCalendar()}
 function renderCalendar(){const y=viewDate.getFullYear(),m=viewDate.getMonth(),first=new Date(y,m,1).getDay(),last=new Date(y,m+1,0).getDate(),prevLast=new Date(y,m,0).getDate(),today=iso(new Date());$('monthLabel').textContent=`${y} 年 ${m+1} 月`;const availableDates=new Set(openRows.map(x=>String(x.slot_date)));let h='';for(let i=first-1;i>=0;i--)h+=`<div class="date muted">${prevLast-i}</div>`;for(let d=1;d<=last;d++){const ds=`${y}-${pad(m+1)}-${pad(d)}`;h+=ds<today||!availableDates.has(ds)?`<div class="date muted">${d}</div>`:`<div class="date available ${selectedDate===ds?'selected':''}" data-date="${ds}">${d}</div>`}const remain=(7-(first+last)%7)%7;for(let d=1;d<=remain;d++)h+=`<div class="date muted">${d}</div>`;$('dates').innerHTML=h;document.querySelectorAll('.date.available').forEach(el=>el.onclick=()=>pickDate(el.dataset.date))}
