@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>巢藝設計｜預約管理後台</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#f5f3ef;--card:#fff;--ink:#24211d;--muted:#756f68;--line:#ded8cf;--accent:#5b4a3a;--ok:#2f6e50;--danger:#9b3f3f}
+*{box-sizing:border-box}body{margin:0;font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;background:var(--bg);color:var(--ink)}header{background:#201d1a;color:#fff;padding:20px 24px;display:flex;justify-content:space-between;gap:16px;position:sticky;top:0;z-index:10}.brand{font-weight:700;letter-spacing:.1em}.brand small{display:block;font-weight:400;color:#cbc3bb;margin-top:4px}main{max-width:1250px;margin:28px auto;padding:0 18px}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px;margin-bottom:20px;box-shadow:0 8px 24px rgba(44,37,30,.04)}.login{max-width:480px;margin:60px auto}.muted{color:var(--muted);line-height:1.65}label{display:block;font-size:14px;margin:12px 0 7px}input,select{width:100%;padding:12px 13px;border:1px solid #cfc7be;border-radius:10px;background:#fff;font:inherit}button{border:0;border-radius:10px;padding:11px 15px;font-weight:700;cursor:pointer}.primary{background:var(--accent);color:#fff}.ghost{background:#eee8e1;color:#4e453d}.danger{background:#f6e9e9;color:var(--danger)}.small{padding:7px 10px;font-size:12px}.full{width:100%;margin-top:16px}.hidden{display:none!important}
+.notice{display:none;margin-top:14px;padding:12px 14px;border-radius:10px;background:#edf6f0;color:#275a42}.notice.err{background:#f8eaea;color:#843636}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}.stat{background:#f8f6f2;border:1px solid var(--line);border-radius:14px;padding:16px}.stat b{display:block;font-size:26px;margin-top:6px}.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.section-head h2{margin:0}
+.toolbar{display:grid;grid-template-columns:1.3fr .8fr .8fr auto;gap:10px;align-items:end;margin-bottom:16px}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}table{width:100%;border-collapse:collapse;min-width:1080px}th,td{padding:12px 10px;border-bottom:1px solid var(--line);text-align:left;font-size:14px;vertical-align:middle}th{background:#f8f6f2;color:var(--muted)}.badge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:12px}.pending{background:#f4ead8;color:#7f5b20}.confirmed{background:#e5f1e9;color:#2f6e50}.cancelled{background:#eee;color:#777}.row-actions{display:flex;gap:6px;flex-wrap:wrap}
+.schedule-top{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:end}.slot-form{display:grid;grid-template-columns:.7fr 1.4fr .8fr 1.1fr auto;gap:10px;align-items:end;margin-top:16px}.checks{display:flex;gap:10px;flex-wrap:wrap;padding:8px 0}.checks label{display:flex;gap:6px;align-items:center;margin:0}.checks input{width:auto}.slot-list{display:grid;gap:8px;margin-top:14px}.slot-item{display:grid;grid-template-columns:90px 1fr auto;gap:10px;align-items:center;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:#faf8f5}.slot-item.closed{opacity:.6}.slot-meta{font-size:13px;color:var(--muted)}.batch{display:grid;grid-template-columns:1fr 1fr .7fr 1.2fr auto;gap:10px;align-items:end;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}.weekday-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.weekday-row label{display:flex;gap:4px;align-items:center;margin:0;font-size:13px}.weekday-row input{width:auto}
+.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.content-field{border:1px solid var(--line);border-radius:12px;padding:12px;background:#faf8f5}.content-field textarea{width:100%;min-height:110px;resize:vertical;line-height:1.7;white-space:pre-wrap}.style-grid{display:grid;grid-template-columns:1.1fr .8fr .8fr .8fr;gap:8px;margin-top:10px}.style-grid label{margin:0}.style-grid input,.style-grid select{margin-top:6px}.color-row{display:grid;grid-template-columns:52px 1fr;gap:8px;align-items:center}.color-row input[type=color]{padding:2px;height:42px}.content-field .toggle{display:flex;align-items:center;gap:7px;margin-top:8px;font-size:13px;color:var(--muted)}.content-field .toggle input{width:auto}.content-actions{display:flex;justify-content:flex-end;margin-top:14px}.month-manage{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:end;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}
+@media(max-width:850px){header{flex-direction:column}.stats{grid-template-columns:1fr 1fr}.toolbar,.schedule-top,.month-manage,.slot-form,.batch{grid-template-columns:1fr}.slot-item{grid-template-columns:1fr}.card{padding:18px}.table-wrap{border:0;overflow:visible}table{min-width:0}thead{display:none}tbody,tr,td{display:block;width:100%}tr{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:12px}td{border:0;padding:6px 4px;font-size:14px}td:nth-child(1)::before{content:"日期："}td:nth-child(2)::before{content:"時段："}td:nth-child(3)::before{content:"服務："}td:nth-child(4)::before{content:"姓名："}td:nth-child(5)::before{content:"電話："}td:nth-child(6)::before{content:"建案："}td:nth-child(7)::before{content:"地址："}td:nth-child(8)::before{content:"狀態："}td::before{font-weight:700;color:var(--muted)}td:last-child{padding-top:10px}.row-actions{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.row-actions button{width:100%;min-height:42px}.section-head{align-items:flex-start;flex-direction:column}#adminView>.card:first-of-type>div[style]{grid-template-columns:1fr!important}.content-grid{grid-template-columns:1fr}.style-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header><div class="brand">巢藝設計有限公司<small>APPOINTMENT ADMIN</small></div><div><span id="who" style="font-size:13px;color:#d9d2cb"></span> <button id="logoutBtn" class="ghost small hidden">登出</button></div></header>
+<main>
+<section id="loginView" class="card login">
+<h1>預約管理後台</h1><p class="muted">請輸入管理員帳號與密碼登入。</p>
+<label>管理員 Email</label><input id="email" type="email" autocomplete="username" value="linestudio365@gmail.com"/>
+<label>密碼</label><input id="password" type="password" autocomplete="current-password" placeholder="請輸入密碼"/>
+<button id="loginBtn" class="primary full">登入後台</button>
+
+<div id="loginNotice" class="notice"></div>
+</section>
+
+<section id="adminView" class="hidden">
+<div class="stats"><div class="stat">全部預約<b id="statAll">0</b></div><div class="stat">待確認<b id="statPending">0</b></div><div class="stat">已確認<b id="statConfirmed">0</b></div><div class="stat">已取消<b id="statCancelled">0</b></div></div>
+
+<div class="card">
+<div class="section-head"><h2>登入密碼設定</h2><span class="muted">首次設定或之後修改密碼都可以在這裡完成</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end">
+<div><label>新密碼</label><input id="newPassword" type="password" autocomplete="new-password" placeholder="至少 8 個字元"/></div>
+<div><label>再次輸入新密碼</label><input id="confirmPassword" type="password" autocomplete="new-password" placeholder="再輸入一次"/></div>
+<button id="setPasswordBtn" class="primary">設定 / 更新密碼</button>
+</div>
+<div id="passwordNotice" class="notice"></div><p class="muted" style="margin-bottom:0">如果你是從「密碼重設信」進來，不需要舊密碼，直接在這裡設定新密碼即可。</p>
+</div>
+
+<div class="card">
+<div class="section-head"><h2>網站文字設定</h2><span class="muted">可直接按 Enter 換行；儲存後客戶預約頁立即更新</span></div>
+<div id="siteContentFields" class="content-grid"><span class="muted">載入中…</span></div>
+<div class="content-actions"><button id="saveContentBtn" class="primary">儲存網站文字</button></div>
+<div id="contentNotice" class="notice"></div>
+</div>
+
+<div class="card">
+<div class="section-head"><h2>預約列表</h2><button id="refreshBtn" class="ghost">重新整理</button></div>
+<div class="toolbar"><div><label>搜尋客戶 / 電話 / 建案 / 地址</label><input id="search" placeholder="輸入關鍵字"/></div><div><label>狀態</label><select id="statusFilter"><option value="all">全部</option><option value="pending">待確認</option><option value="confirmed">已確認</option><option value="cancelled">已取消</option></select></div><div><label>日期</label><input id="dateFilter" type="date"/></div><button id="clearBtn" class="ghost">清除篩選</button></div>
+<div class="table-wrap"><table><thead><tr><th>日期</th><th>時段</th><th>服務</th><th>姓名</th><th>電話</th><th>建案名稱</th><th>地址</th><th>狀態</th><th>操作</th></tr></thead><tbody id="bookingRows"></tbody></table></div>
+<div id="empty" class="muted hidden" style="padding:20px 4px">目前沒有符合條件的預約。</div>
+</div>
+
+<div class="card">
+<div class="section-head"><h2>日期與時段設定</h2><span class="muted">可單日調整，也可以整個月份一次關閉／開放</span></div>
+<div class="schedule-top"><div><label>管理日期</label><input id="manageDate" type="date"/></div><button id="closeDayBtn" class="danger">整天關閉</button><button id="openDayBtn" class="ghost">重新開放</button></div>
+<p id="dayState" class="muted"></p>
+<div class="month-manage"><div><label>整月管理</label><input id="manageMonth" type="month"/></div><button id="closeMonthBtn" class="danger">整月關閉</button><button id="openMonthBtn" class="ghost">整月重新開放</button></div>
+<p id="monthState" class="muted"></p>
+
+<div class="slot-form">
+  <div><label>時間</label><input id="slotTime" type="time" step="300"/></div>
+  <div><label>開放服務</label><div class="checks"><label><input type="checkbox" class="svc" value="初步諮詢" checked>初步諮詢</label><label><input type="checkbox" class="svc" value="現場丈量" checked>現場丈量</label><label><input type="checkbox" class="svc" value="設計會議" checked>設計會議</label></div></div>
+  <div><label>狀態</label><select id="slotOpen"><option value="true">開放</option><option value="false">關閉</option></select></div>
+  <div><label>備註（後台用）</label><input id="slotNote" placeholder="可不填"/></div>
+  <button id="saveSlotBtn" class="primary">新增 / 更新時段</button>
+</div>
+<div id="slotList" class="slot-list"></div>
+
+<div class="batch">
+  <div><label>批次開始日</label><input id="batchStart" type="date"/></div>
+  <div><label>批次結束日</label><input id="batchEnd" type="date"/></div>
+  <div><label>時間</label><input id="batchTime" type="time" step="300"/></div>
+  <div><label>服務</label><div class="checks"><label><input type="checkbox" class="bsvc" value="初步諮詢" checked>初步諮詢</label><label><input type="checkbox" class="bsvc" value="現場丈量" checked>現場丈量</label><label><input type="checkbox" class="bsvc" value="設計會議" checked>設計會議</label></div></div>
+  <button id="batchBtn" class="ghost">批次加入</button>
+</div>
+<div class="weekday-row"><span class="muted">套用星期：</span><label><input type="checkbox" class="dow" value="1" checked>一</label><label><input type="checkbox" class="dow" value="2" checked>二</label><label><input type="checkbox" class="dow" value="3" checked>三</label><label><input type="checkbox" class="dow" value="4" checked>四</label><label><input type="checkbox" class="dow" value="5" checked>五</label><label><input type="checkbox" class="dow" value="6">六</label><label><input type="checkbox" class="dow" value="0">日</label></div>
+</div>
+</section>
+</main>
+
+<script>
+const SUPABASE_URL='https://fswzgoobhdilyunipowb.supabase.co',SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZzd3pnb29iaGRpbHl1bmlwb3diIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0MjUyNjQsImV4cCI6MjEwNDAwMTI2NH0.ud-lArAq8ChHse5ykIb7sb2xWQWCYnDruT1Q1RZpK2I';
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY),$=id=>document.getElementById(id);let bookings=[],slots=[],blocked=[],siteContent=[];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=t=>String(t||'').slice(0,5),statusText=s=>s==='confirmed'?'已確認':s==='cancelled'?'已取消':'待確認';
+function notice(el,msg,err=false){el.textContent=msg;el.className='notice'+(err?' err':'');el.style.display='block'}
+function ymd(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function services(cls){return [...document.querySelectorAll('.'+cls+':checked')].map(x=>x.value)}
+
+$('loginBtn').onclick=async()=>{const email=$('email').value.trim().toLowerCase(),password=$('password').value;if(!email||!password)return notice($('loginNotice'),'請輸入管理員 Email 與密碼。',true);$('loginBtn').disabled=true;const {error}=await sb.auth.signInWithPassword({email,password});$('loginBtn').disabled=false;if(error){const m=error.message||'';return notice($('loginNotice'),m.toLowerCase().includes('invalid login credentials')?'帳號或密碼錯誤，請再確認。':'登入失敗：'+m,true)}};
+$('logoutBtn').onclick=async()=>{await sb.auth.signOut();location.reload()};
+sb.auth.onAuthStateChange((event,session)=>{if(event==='PASSWORD_RECOVERY'&&session){setTimeout(()=>{init();const el=$('newPassword');if(el){el.focus();window.scrollTo({top:0,behavior:'smooth'})}},0)}else if(event==='SIGNED_IN'&&session){setTimeout(init,0)}});
+$('setPasswordBtn').onclick=async()=>{const p=$('newPassword').value,c=$('confirmPassword').value;if(p.length<8)return notice($('passwordNotice'),'密碼至少需要 8 個字元。',true);if(p!==c)return notice($('passwordNotice'),'兩次輸入的密碼不一致。',true);$('setPasswordBtn').disabled=true;const {error}=await sb.auth.updateUser({password:p});$('setPasswordBtn').disabled=false;if(error)return notice($('passwordNotice'),'密碼設定失敗：'+error.message,true);$('newPassword').value='';$('confirmPassword').value='';notice($('passwordNotice'),'密碼設定完成。之後可直接使用 Email＋密碼登入。')};
+
+async function loadSiteContent(){
+  const {data,error}=await sb.from('site_content').select('*').order('sort_order');
+  if(error){$('siteContentFields').innerHTML='<span class="muted">網站文字設定尚未啟用。</span>';return}
+  siteContent=data||[];
+  $('siteContentFields').innerHTML=siteContent.map(r=>{
+    if(r.key==='booking_min_days')return `<div class="content-field"><label>${esc(r.label)}</label><input type="number" min="0" max="90" step="1" data-content-key="${esc(r.key)}" value="${esc(r.value)}"><div class="muted">例如填 14：今天起算 14 天內不可預約，最早可約第 14 天。</div></div>`;
+    const ff=esc(r.font_family||'system');
+    const fs=Number(r.font_size||0)||'';
+    const fw=String(r.font_weight||'400');
+    const lh=Number(r.line_height||1.8);
+    const tc=esc(r.text_color||'#24211d');
+    return `<div class="content-field">
+      <label>${esc(r.label)}</label>
+      <textarea data-content-key="${esc(r.key)}">${esc(r.value)}</textarea>
+      <div class="muted" style="font-size:12px;margin-top:6px">需要分段時直接按 Enter 換行，前台會保留換行。</div>
+      <div class="style-grid">
+        <label>字體<select data-font-family="${esc(r.key)}"><option value="system" ${ff==='system'?'selected':''}>系統黑體</option><option value="noto" ${ff==='noto'?'selected':''}>Noto Sans TC</option><option value="microsoft" ${ff==='microsoft'?'selected':''}>微軟正黑體</option><option value="serif" ${ff==='serif'?'selected':''}>明體／襯線體</option></select></label>
+        <label>大小 px<input type="number" min="10" max="72" step="1" data-font-size="${esc(r.key)}" value="${fs}" placeholder="預設"></label>
+        <label>粗細<select data-font-weight="${esc(r.key)}"><option value="400" ${fw==='400'?'selected':''}>一般</option><option value="500" ${fw==='500'?'selected':''}>中等</option><option value="700" ${fw==='700'?'selected':''}>粗體</option></select></label>
+        <label>行距<select data-line-height="${esc(r.key)}"><option value="1.4" ${lh==1.4?'selected':''}>1.4</option><option value="1.6" ${lh==1.6?'selected':''}>1.6</option><option value="1.8" ${lh==1.8?'selected':''}>1.8</option><option value="2" ${lh==2?'selected':''}>2.0</option></select></label>
+      </div>
+      <label style="margin-top:10px">文字顏色</label><div class="color-row"><input type="color" data-text-color="${esc(r.key)}" value="${tc}"><input type="text" data-text-color-text="${esc(r.key)}" value="${tc}" placeholder="#24211d"></div>
+      <label class="toggle"><input type="checkbox" data-content-enabled="${esc(r.key)}" ${r.enabled?'checked':''}> 顯示這段文字</label>
+    </div>`
+  }).join('');
+  document.querySelectorAll('[data-text-color]').forEach(c=>{const k=c.dataset.textColor,txt=document.querySelector(`[data-text-color-text="${k}"]`);c.oninput=()=>txt.value=c.value;txt.onchange=()=>{if(/^#[0-9a-fA-F]{6}$/.test(txt.value.trim()))c.value=txt.value.trim()}})
+}
+$('saveContentBtn').onclick=async()=>{
+  if(!siteContent.length)return notice($('contentNotice'),'網站文字設定尚未啟用。',true);
+  $('saveContentBtn').disabled=true;notice($('contentNotice'),'儲存中…');
+  try{
+    for(const r of siteContent){
+      const value=(document.querySelector(`[data-content-key="${r.key}"]`)?.value||'').trim();
+      const args={p_key:r.key,p_value:value,p_enabled:r.key==='booking_min_days'?true:!!document.querySelector(`[data-content-enabled="${r.key}"]`)?.checked};
+      if(r.key!=='booking_min_days'){
+        args.p_font_family=document.querySelector(`[data-font-family="${r.key}"]`)?.value||'system';
+        const fs=document.querySelector(`[data-font-size="${r.key}"]`)?.value;
+        args.p_font_size=fs?Number(fs):null;
+        args.p_font_weight=document.querySelector(`[data-font-weight="${r.key}"]`)?.value||'400';
+        args.p_line_height=Number(document.querySelector(`[data-line-height="${r.key}"]`)?.value||1.8);
+        const raw=(document.querySelector(`[data-text-color-text="${r.key}"]`)?.value||'#24211d').trim();
+        args.p_text_color=/^#[0-9a-fA-F]{6}$/.test(raw)?raw:'#24211d';
+      }
+      const {data,error}=await sb.rpc('admin_save_site_content_v2',args);if(error)throw error;if(data!==true)throw new Error('資料庫沒有確認更新');
+    }
+    await loadSiteContent();
+    notice($('contentNotice'),'已成功儲存。重新載入後仍會保留最新內容與文字樣式。');
+  }catch(e){notice($('contentNotice'),'儲存失敗：'+e.message,true)}finally{$('saveContentBtn').disabled=false}
+};
+
+async function init(){const {data:{session}}=await sb.auth.getSession();if(!session)return;$('loginView').classList.add('hidden');$('adminView').classList.remove('hidden');$('logoutBtn').classList.remove('hidden');$('who').textContent=session.user.email||'';const {data:ok,error}=await sb.rpc('is_admin');if(error||!ok){await sb.auth.signOut();location.reload();return}const today=ymd(new Date());$('manageDate').value=today;$('manageMonth').value=today.slice(0,7);$('batchStart').value=today;$('batchEnd').value=today;await loadAll()}
+async function loadAll(){await Promise.all([loadBookings(),loadDay(),loadBlocked(),loadSiteContent()])}
+async function loadBookings(){const {data,error}=await sb.from('bookings').select('*').order('booking_date',{ascending:true}).order('booking_time',{ascending:true});if(error)return alert('讀取預約失敗：'+error.message);bookings=data||[];renderBookings();$('statAll').textContent=bookings.length;$('statPending').textContent=bookings.filter(x=>x.status==='pending').length;$('statConfirmed').textContent=bookings.filter(x=>x.status==='confirmed').length;$('statCancelled').textContent=bookings.filter(x=>x.status==='cancelled').length}
+function renderBookings(){const q=$('search').value.trim().toLowerCase(),sf=$('statusFilter').value,df=$('dateFilter').value;const rows=bookings.filter(b=>(sf==='all'||b.status===sf)&&(!df||b.booking_date===df)&&(!q||[b.customer_name,b.phone,b.project_name,b.address,b.service].some(v=>String(v||'').toLowerCase().includes(q))));$('empty').classList.toggle('hidden',rows.length>0);$('bookingRows').innerHTML=rows.map(b=>`<tr><td>${esc(b.booking_date)}</td><td>${esc(fmt(b.booking_time))}</td><td>${esc(b.service)}</td><td>${esc(b.customer_name)}</td><td>${esc(b.phone)}</td><td>${esc(b.project_name)}</td><td>${esc(b.address||'')}</td><td><span class="badge ${esc(b.status)}">${statusText(b.status)}</span></td><td><div class="row-actions">${b.status!=='confirmed'?`<button class="small ghost" onclick="setStatus('${b.id}','confirmed')">確認</button>`:''}${b.status!=='cancelled'?`<button class="small ghost" onclick="setStatus('${b.id}','cancelled')">取消</button>`:''}${b.status!=='pending'?`<button class="small ghost" onclick="setStatus('${b.id}','pending')">待確認</button>`:''}<button class="small danger" onclick="deleteBooking('${b.id}')">刪除</button></div></td></tr>`).join('')}
+window.setStatus=async(id,status)=>{const {error}=await sb.from('bookings').update({status}).eq('id',id);if(error)return alert('更新失敗：'+error.message);await loadBookings();await loadDay()};
+window.deleteBooking=async id=>{if(!confirm('確定永久刪除這筆預約嗎？'))return;const {error}=await sb.from('bookings').delete().eq('id',id);if(error)return alert('刪除失敗：'+error.message);await loadBookings();await loadDay()};
+$('search').oninput=renderBookings;$('statusFilter').onchange=renderBookings;$('dateFilter').onchange=renderBookings;$('clearBtn').onclick=()=>{$('search').value='';$('statusFilter').value='all';$('dateFilter').value='';renderBookings()};$('refreshBtn').onclick=loadAll;
+
+async function loadBlocked(){const {data,error}=await sb.from('blocked_dates').select('*');if(error)return;blocked=data||[];renderDayState();renderMonthState()}
+function renderDayState(){const d=$('manageDate').value,b=blocked.find(x=>x.blocked_date===d);$('dayState').textContent=b?'目前：整天關閉'+(b.reason?'（'+b.reason+'）':''):'目前：依下方時段開放'}
+function monthBounds(v){if(!v)return null;const [y,m]=v.split('-').map(Number),last=new Date(y,m,0).getDate();return {start:`${y}-${String(m).padStart(2,'0')}-01`,end:`${y}-${String(m).padStart(2,'0')}-${String(last).padStart(2,'0')}`,days:last,label:`${y} 年 ${m} 月`}}
+function renderMonthState(){const b=monthBounds($('manageMonth').value);if(!b){$('monthState').textContent='';return}const count=blocked.filter(x=>x.blocked_date>=b.start&&x.blocked_date<=b.end).length;$('monthState').textContent=`${b.label}：目前有 ${count} 天整天關閉。按「整月關閉」會一次關閉整月；按「整月重新開放」會解除整月關閉。`}
+$('manageDate').onchange=async()=>{await loadDay();renderDayState()};$('manageMonth').onchange=renderMonthState;
+async function loadDay(){const d=$('manageDate').value;if(!d)return;const {data,error}=await sb.rpc('admin_get_slots_v2',{p_start:d,p_end:d});if(error)return alert('讀取時段失敗：'+error.message);slots=data||[];renderSlots()}
+function renderSlots(){$('slotList').innerHTML=slots.length?slots.map(s=>`<div class="slot-item ${s.is_open?'':'closed'}"><strong>${fmt(s.slot_time)}</strong><div><div>${(s.allowed_services||[]).map(esc).join('、')}</div><div class="slot-meta">${s.is_open?'開放':'關閉'}${s.is_booked?'｜已有預約':''}${s.note?'｜'+esc(s.note):''}</div></div><div class="row-actions"><button class="small ghost" onclick="editSlot('${fmt(s.slot_time)}')">編輯</button><button class="small danger" onclick="removeSlot('${fmt(s.slot_time)}')">刪除</button></div></div>`).join(''):'<span class="muted">這一天目前沒有設定時段。</span>'}
+window.editSlot=time=>{const s=slots.find(x=>fmt(x.slot_time)===time);if(!s)return;$('slotTime').value=time;$('slotOpen').value=String(s.is_open);$('slotNote').value=s.note||'';document.querySelectorAll('.svc').forEach(x=>x.checked=(s.allowed_services||[]).includes(x.value));window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})};
+window.removeSlot=async time=>{if(!confirm('確定刪除 '+time+' 這個時段嗎？'))return;const {error}=await sb.rpc('admin_remove_slot_v2',{p_date:$('manageDate').value,p_time:time});if(error)return alert(error.message);await loadDay()};
+$('saveSlotBtn').onclick=async()=>{const d=$('manageDate').value,t=$('slotTime').value,sv=services('svc');if(!d||!t)return alert('請先選日期與時間。');if(!sv.length)return alert('至少選一種服務。');const {error}=await sb.rpc('admin_save_slot_v2',{p_date:d,p_time:t,p_open:$('slotOpen').value==='true',p_note:$('slotNote').value.trim()||null,p_allowed_services:sv});if(error)return alert('儲存失敗：'+error.message);$('slotTime').value='';$('slotNote').value='';await loadDay()};
+$('closeDayBtn').onclick=async()=>{const d=$('manageDate').value;if(!d)return;const existing=blocked.find(x=>x.blocked_date===d);if(!existing){const {error}=await sb.from('blocked_dates').insert({blocked_date:d,reason:'後台整天關閉'});if(error)return alert('關閉失敗：'+error.message)}await loadBlocked();alert('已整天關閉')};$('openDayBtn').onclick=async()=>{const d=$('manageDate').value;const {error}=await sb.from('blocked_dates').delete().eq('blocked_date',d);if(error)return alert('開放失敗：'+error.message);await loadBlocked();alert('已重新開放；實際可預約時間依下方時段設定。')};
+$('closeMonthBtn').onclick=async()=>{const b=monthBounds($('manageMonth').value);if(!b)return alert('請先選擇月份。');if(!confirm(`確定要將 ${b.label} 整個月份全部關閉嗎？`))return;const existing=new Set(blocked.filter(x=>x.blocked_date>=b.start&&x.blocked_date<=b.end).map(x=>x.blocked_date)),rows=[];for(let d=1;d<=b.days;d++){const ds=b.start.slice(0,8)+String(d).padStart(2,'0');if(!existing.has(ds))rows.push({blocked_date:ds,reason:'後台整月關閉'})}$('closeMonthBtn').disabled=true;try{if(rows.length){const {error}=await sb.from('blocked_dates').insert(rows);if(error)throw error}await loadBlocked();alert(`${b.label} 已整月關閉。`)}catch(e){alert('整月關閉失敗：'+e.message)}finally{$('closeMonthBtn').disabled=false}};
+$('openMonthBtn').onclick=async()=>{const b=monthBounds($('manageMonth').value);if(!b)return alert('請先選擇月份。');if(!confirm(`確定要解除 ${b.label} 的整月關閉嗎？\n實際可預約日期仍會依時段設定與最早預約天數決定。`))return;$('openMonthBtn').disabled=true;try{const {error}=await sb.from('blocked_dates').delete().gte('blocked_date',b.start).lte('blocked_date',b.end);if(error)throw error;await loadBlocked();alert(`${b.label} 已解除整月關閉。`)}catch(e){alert('整月開放失敗：'+e.message)}finally{$('openMonthBtn').disabled=false}};
+
+$('batchBtn').onclick=async()=>{const s=$('batchStart').value,e=$('batchEnd').value,t=$('batchTime').value,sv=services('bsvc'),dows=new Set([...document.querySelectorAll('.dow:checked')].map(x=>Number(x.value)));if(!s||!e||!t||!sv.length)return alert('請完整設定批次日期、時間與服務。');const start=new Date(s+'T00:00:00'),end=new Date(e+'T00:00:00');if(end<start)return alert('結束日不能早於開始日。');const days=Math.round((end-start)/86400000)+1;if(days>120)return alert('一次最多批次 120 天。');$('batchBtn').disabled=true;try{for(let d=new Date(start);d<=end;d.setDate(d.getDate()+1)){if(!dows.has(d.getDay()))continue;const ds=ymd(d);const {error}=await sb.rpc('admin_save_slot_v2',{p_date:ds,p_time:t,p_open:true,p_note:null,p_allowed_services:sv});if(error)throw error}alert('批次加入完成。');await loadDay()}catch(e){alert('批次設定失敗：'+e.message)}finally{$('batchBtn').disabled=false}};
+sb.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_IN'&&session)init()});init();
+</script>
+</body></html>
