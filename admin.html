@@ -31,6 +31,16 @@
 <div class="stats"><div class="stat">全部預約<b id="statAll">0</b></div><div class="stat">待確認<b id="statPending">0</b></div><div class="stat">已確認<b id="statConfirmed">0</b></div><div class="stat">已取消<b id="statCancelled">0</b></div></div>
 
 <div class="card">
+<div class="section-head"><h2>登入密碼設定</h2><span class="muted">首次設定或之後修改密碼都可以在這裡完成</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end">
+<div><label>新密碼</label><input id="newPassword" type="password" autocomplete="new-password" placeholder="至少 8 個字元"/></div>
+<div><label>再次輸入新密碼</label><input id="confirmPassword" type="password" autocomplete="new-password" placeholder="再輸入一次"/></div>
+<button id="setPasswordBtn" class="primary">設定 / 更新密碼</button>
+</div>
+<div id="passwordNotice" class="notice"></div>
+</div>
+
+<div class="card">
 <div class="section-head"><h2>預約列表</h2><button id="refreshBtn" class="ghost">重新整理</button></div>
 <div class="toolbar"><div><label>搜尋客戶 / 電話 / 建案 / 地址</label><input id="search" placeholder="輸入關鍵字"/></div><div><label>狀態</label><select id="statusFilter"><option value="all">全部</option><option value="pending">待確認</option><option value="confirmed">已確認</option><option value="cancelled">已取消</option></select></div><div><label>日期</label><input id="dateFilter" type="date"/></div><button id="clearBtn" class="ghost">清除篩選</button></div>
 <div class="table-wrap"><table><thead><tr><th>日期</th><th>時段</th><th>服務</th><th>姓名</th><th>電話</th><th>建案名稱</th><th>地址</th><th>狀態</th><th>操作</th></tr></thead><tbody id="bookingRows"></tbody></table></div>
@@ -74,6 +84,7 @@ function services(cls){return [...document.querySelectorAll('.'+cls+':checked')]
 
 $('loginBtn').onclick=async()=>{const email=$('email').value.trim().toLowerCase(),password=$('password').value;if(!email||!password)return notice($('loginNotice'),'請輸入管理員 Email 與密碼。',true);$('loginBtn').disabled=true;const {error}=await sb.auth.signInWithPassword({email,password});$('loginBtn').disabled=false;if(error){const m=error.message||'';return notice($('loginNotice'),m.toLowerCase().includes('invalid login credentials')?'帳號或密碼錯誤，請再確認。':'登入失敗：'+m,true)}};
 $('logoutBtn').onclick=async()=>{await sb.auth.signOut();location.reload()};
+$('setPasswordBtn').onclick=async()=>{const p=$('newPassword').value,c=$('confirmPassword').value;if(p.length<8)return notice($('passwordNotice'),'密碼至少需要 8 個字元。',true);if(p!==c)return notice($('passwordNotice'),'兩次輸入的密碼不一致。',true);$('setPasswordBtn').disabled=true;const {error}=await sb.auth.updateUser({password:p});$('setPasswordBtn').disabled=false;if(error)return notice($('passwordNotice'),'密碼設定失敗：'+error.message,true);$('newPassword').value='';$('confirmPassword').value='';notice($('passwordNotice'),'密碼設定完成。之後可直接使用 Email＋密碼登入。')};
 
 async function init(){const {data:{session}}=await sb.auth.getSession();if(!session)return;$('loginView').classList.add('hidden');$('adminView').classList.remove('hidden');$('logoutBtn').classList.remove('hidden');$('who').textContent=session.user.email||'';const {data:ok,error}=await sb.rpc('is_admin');if(error||!ok){await sb.auth.signOut();location.reload();return}const today=ymd(new Date());$('manageDate').value=today;$('batchStart').value=today;$('batchEnd').value=today;await loadAll()}
 async function loadAll(){await Promise.all([loadBookings(),loadDay(),loadBlocked()])}
