@@ -13,9 +13,9 @@
 .toolbar{display:grid;grid-template-columns:1.3fr .8fr .8fr auto;gap:10px;align-items:end;margin-bottom:16px}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}table{width:100%;border-collapse:collapse;min-width:1080px}th,td{padding:12px 10px;border-bottom:1px solid var(--line);text-align:left;font-size:14px;vertical-align:middle}th{background:#f8f6f2;color:var(--muted)}.badge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:12px}.pending{background:#f4ead8;color:#7f5b20}.confirmed{background:#e5f1e9;color:#2f6e50}.cancelled{background:#eee;color:#777}.row-actions{display:flex;gap:6px;flex-wrap:wrap}
 .schedule-top{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:end}.slot-form{display:grid;grid-template-columns:.7fr 1.4fr .8fr 1.1fr auto;gap:10px;align-items:end;margin-top:16px}.checks{display:flex;gap:10px;flex-wrap:wrap;padding:8px 0}.checks label{display:flex;gap:6px;align-items:center;margin:0}.checks input{width:auto}.slot-list{display:grid;gap:8px;margin-top:14px}.slot-item{display:grid;grid-template-columns:90px 1fr auto;gap:10px;align-items:center;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:#faf8f5}.slot-item.closed{opacity:.6}.slot-meta{font-size:13px;color:var(--muted)}
 .batch-wrap{margin-top:22px;padding:18px;border:1px solid var(--line);border-radius:14px;background:#faf8f5}.batch-title{font-size:17px;font-weight:700;margin-bottom:4px}.batch{display:grid;grid-template-columns:1fr 1fr .7fr 1.2fr;gap:10px;align-items:end;margin-top:10px}.batch-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.weekday-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center}.weekday-row label{display:flex;gap:4px;align-items:center;margin:0;font-size:13px}.weekday-row input{width:auto}.weekday-quick{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.content-field{border:1px solid var(--line);border-radius:12px;padding:12px;background:#faf8f5}.content-field textarea{width:100%;min-height:110px;resize:vertical;line-height:1.7;white-space:pre-wrap}.style-grid{display:grid;grid-template-columns:1.1fr .8fr .8fr .8fr;gap:8px;margin-top:10px}.style-grid label{margin:0}.style-grid input,.style-grid select{margin-top:6px}.color-row{display:grid;grid-template-columns:52px 1fr;gap:8px;align-items:center}.color-row input[type=color]{padding:2px;height:42px}.content-field .toggle{display:flex;align-items:center;gap:7px;margin-top:8px;font-size:13px;color:var(--muted)}.content-field .toggle input{width:auto}.content-actions{display:flex;justify-content:flex-end;margin-top:14px}.month-manage{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:end;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}
+.bulk-date-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:14px}.bulk-date{border:1px solid var(--line);border-radius:10px;padding:10px 6px;background:#fff;display:flex;align-items:center;justify-content:center;gap:5px;cursor:pointer;min-height:44px}.bulk-date input{width:auto;margin:0}.bulk-date.selected{background:#eee5db;border-color:#9e8974}.bulk-date .dow-label{font-size:11px;color:var(--muted)}.bulk-setting-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:16px;padding-top:14px;border-top:1px dashed var(--line)}.bulk-time-list{display:flex;gap:8px;flex-wrap:wrap;padding:8px 0}.bulk-time{display:flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:9px;padding:8px 10px;background:#fff}.bulk-time input{width:auto}.bulk-time button{padding:1px 5px;background:transparent;color:var(--danger)}.bulk-add-time{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:6px}.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.content-field{border:1px solid var(--line);border-radius:12px;padding:12px;background:#faf8f5}.content-field textarea{width:100%;min-height:110px;resize:vertical;line-height:1.7;white-space:pre-wrap}.style-grid{display:grid;grid-template-columns:1.1fr .8fr .8fr .8fr;gap:8px;margin-top:10px}.style-grid label{margin:0}.style-grid input,.style-grid select{margin-top:6px}.color-row{display:grid;grid-template-columns:52px 1fr;gap:8px;align-items:center}.color-row input[type=color]{padding:2px;height:42px}.content-field .toggle{display:flex;align-items:center;gap:7px;margin-top:8px;font-size:13px;color:var(--muted)}.content-field .toggle input{width:auto}.content-actions{display:flex;justify-content:flex-end;margin-top:14px}.month-manage{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:end;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}
 .lead-day-field{background:#f3eee8;border-color:#d7cabd}.lead-day-field input{font-weight:700}
-@media(max-width:850px){header{flex-direction:column}.stats{grid-template-columns:1fr 1fr}.toolbar,.schedule-top,.month-manage,.slot-form,.batch{grid-template-columns:1fr}.slot-item{grid-template-columns:1fr}.card{padding:18px}.table-wrap{border:0;overflow:visible}table{min-width:0}thead{display:none}tbody,tr,td{display:block;width:100%}tr{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:12px}td{border:0;padding:6px 4px;font-size:14px}td:nth-child(1)::before{content:"日期："}td:nth-child(2)::before{content:"時段："}td:nth-child(3)::before{content:"服務："}td:nth-child(4)::before{content:"姓名："}td:nth-child(5)::before{content:"電話："}td:nth-child(6)::before{content:"建案："}td:nth-child(7)::before{content:"地址："}td:nth-child(8)::before{content:"狀態："}td::before{font-weight:700;color:var(--muted)}td:last-child{padding-top:10px}.row-actions{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.row-actions button{width:100%;min-height:42px}.section-head{align-items:flex-start;flex-direction:column}#adminView>.card:first-of-type>div[style]{grid-template-columns:1fr!important}.content-grid{grid-template-columns:1fr}.style-grid{grid-template-columns:1fr 1fr}.batch-actions button{flex:1}}
+@media(max-width:850px){header{flex-direction:column}.stats{grid-template-columns:1fr 1fr}.toolbar,.schedule-top,.month-manage,.slot-form,.batch{grid-template-columns:1fr}.slot-item{grid-template-columns:1fr}.card{padding:18px}.table-wrap{border:0;overflow:visible}table{min-width:0}thead{display:none}tbody,tr,td{display:block;width:100%}tr{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:12px}td{border:0;padding:6px 4px;font-size:14px}td:nth-child(1)::before{content:"日期："}td:nth-child(2)::before{content:"時段："}td:nth-child(3)::before{content:"服務："}td:nth-child(4)::before{content:"姓名："}td:nth-child(5)::before{content:"電話："}td:nth-child(6)::before{content:"建案："}td:nth-child(7)::before{content:"地址："}td:nth-child(8)::before{content:"狀態："}td::before{font-weight:700;color:var(--muted)}td:last-child{padding-top:10px}.row-actions{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.row-actions button{width:100%;min-height:42px}.section-head{align-items:flex-start;flex-direction:column}#adminView>.card:first-of-type>div[style]{grid-template-columns:1fr!important}.content-grid{grid-template-columns:1fr}.style-grid{grid-template-columns:1fr 1fr}.batch-actions button{flex:1}.bulk-date-grid{grid-template-columns:repeat(4,1fr)}.bulk-setting-grid{grid-template-columns:1fr}.bulk-add-time{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -60,17 +60,43 @@
 <div class="section-head"><h2>日期與時段設定</h2><span class="muted">平常建議直接用「批次排程」，單日設定只留給臨時微調</span></div>
 
 <div class="batch-wrap">
-  <div class="batch-title">批次排程（建議使用）</div>
-  <div class="muted">選日期範圍、勾星期與服務後，一次開放或關閉整批日期，不用一天一天調整。</div>
-  <div class="batch">
-    <div><label>開始日</label><input id="batchStart" type="date"/></div>
-    <div><label>結束日</label><input id="batchEnd" type="date"/></div>
-    <div><label>時間</label><input id="batchTime" type="time" step="300"/></div>
-    <div><label>服務</label><div class="checks"><label><input type="checkbox" class="bsvc" value="初步諮詢" checked>初步諮詢</label><label><input type="checkbox" class="bsvc" value="現場丈量" checked>現場丈量</label><label><input type="checkbox" class="bsvc" value="設計會議" checked>設計會議</label></div></div>
+  <div class="batch-title">整月批次排程（建議使用）</div>
+  <div class="muted">先選月份，再直接勾選這個月要開放的日期；服務與時間都可以一次多選後套用。</div>
+
+  <div style="max-width:280px;margin-top:12px">
+    <label>月份</label><input id="bulkMonth" type="month"/>
   </div>
-  <div class="weekday-row"><span class="muted">套用星期：</span><label><input type="checkbox" class="dow" value="1" checked>一</label><label><input type="checkbox" class="dow" value="2" checked>二</label><label><input type="checkbox" class="dow" value="3" checked>三</label><label><input type="checkbox" class="dow" value="4" checked>四</label><label><input type="checkbox" class="dow" value="5" checked>五</label><label><input type="checkbox" class="dow" value="6">六</label><label><input type="checkbox" class="dow" value="0">日</label></div>
-  <div class="weekday-quick"><button type="button" class="ghost small" id="weekdaysBtn">一～五</button><button type="button" class="ghost small" id="allDaysBtn">全選</button><button type="button" class="ghost small" id="clearDaysBtn">清除</button></div>
-  <div class="batch-actions"><button id="batchOpenBtn" class="primary">批次開放</button><button id="batchCloseBtn" class="danger">批次關閉</button></div>
+
+  <div class="weekday-quick">
+    <button type="button" class="ghost small" id="selectAllDatesBtn">日期全選</button>
+    <button type="button" class="ghost small" id="selectWeekdaysDatesBtn">只選一～五</button>
+    <button type="button" class="ghost small" id="clearDatesBtn">全部取消</button>
+  </div>
+
+  <div id="bulkDates" class="bulk-date-grid"></div>
+  <div id="bulkSelectedCount" class="muted" style="margin-top:8px">已選 0 天</div>
+
+  <div class="bulk-setting-grid">
+    <div>
+      <label>服務（可複選）</label>
+      <div class="checks">
+        <label><input type="checkbox" class="bulkSvc" value="初步諮詢">初步諮詢</label>
+        <label><input type="checkbox" class="bulkSvc" value="現場丈量" checked>現場丈量</label>
+        <label><input type="checkbox" class="bulkSvc" value="設計會議">設計會議</label>
+      </div>
+    </div>
+    <div>
+      <label>時間（可一次加入多個）</label>
+      <div id="bulkTimes" class="bulk-time-list"></div>
+      <div class="bulk-add-time"><input id="bulkNewTime" type="time" step="300"/><button type="button" id="addBulkTimeBtn" class="ghost">＋ 加入時間</button></div>
+    </div>
+  </div>
+
+  <div class="batch-actions">
+    <button id="bulkOpenBtn" class="primary">一次開放全部選取</button>
+    <button id="bulkCloseBtn" class="danger">一次關閉全部選取</button>
+  </div>
+  <div class="muted" style="margin-top:8px">例如：勾 9/3、9/6、9/10 → 勾「現場丈量」→ 勾 10:00、14:00 → 按一次開放，就會一次完成 6 個時段設定。</div>
 </div>
 
 <div style="margin-top:24px;padding-top:18px;border-top:1px solid var(--line)">
@@ -159,7 +185,7 @@ $('saveContentBtn').onclick=async()=>{
   }catch(e){notice($('contentNotice'),'儲存失敗：'+e.message,true)}finally{$('saveContentBtn').disabled=false}
 };
 
-async function init(){const {data:{session}}=await sb.auth.getSession();if(!session)return;$('loginView').classList.add('hidden');$('adminView').classList.remove('hidden');$('logoutBtn').classList.remove('hidden');$('who').textContent=session.user.email||'';const {data:ok,error}=await sb.rpc('is_admin');if(error||!ok){await sb.auth.signOut();location.reload();return}const today=ymd(new Date());$('manageDate').value=today;$('manageMonth').value=today.slice(0,7);$('batchStart').value=today;$('batchEnd').value=today;await loadAll()}
+async function init(){const {data:{session}}=await sb.auth.getSession();if(!session)return;$('loginView').classList.add('hidden');$('adminView').classList.remove('hidden');$('logoutBtn').classList.remove('hidden');$('who').textContent=session.user.email||'';const {data:ok,error}=await sb.rpc('is_admin');if(error||!ok){await sb.auth.signOut();location.reload();return}const today=ymd(new Date());$('manageDate').value=today;$('manageMonth').value=today.slice(0,7);$('bulkMonth').value=today.slice(0,7);renderBulkDates();renderBulkTimes();await loadAll()}
 async function loadAll(){await Promise.all([loadBookings(),loadDay(),loadBlocked(),loadSiteContent()])}
 async function loadBookings(){const {data,error}=await sb.from('bookings').select('*').order('booking_date',{ascending:true}).order('booking_time',{ascending:true});if(error)return alert('讀取預約失敗：'+error.message);bookings=data||[];renderBookings();$('statAll').textContent=bookings.length;$('statPending').textContent=bookings.filter(x=>x.status==='pending').length;$('statConfirmed').textContent=bookings.filter(x=>x.status==='confirmed').length;$('statCancelled').textContent=bookings.filter(x=>x.status==='cancelled').length}
 function renderBookings(){const q=$('search').value.trim().toLowerCase(),sf=$('statusFilter').value,df=$('dateFilter').value;const rows=bookings.filter(b=>(sf==='all'||b.status===sf)&&(!df||b.booking_date===df)&&(!q||[b.customer_name,b.phone,b.project_name,b.address,b.service].some(v=>String(v||'').toLowerCase().includes(q))));$('empty').classList.toggle('hidden',rows.length>0);$('bookingRows').innerHTML=rows.map(b=>`<tr><td>${esc(b.booking_date)}</td><td>${esc(fmt(b.booking_time))}</td><td>${esc(b.service)}</td><td>${esc(b.customer_name)}</td><td>${esc(b.phone)}</td><td>${esc(b.project_name)}</td><td>${esc(b.address||'')}</td><td><span class="badge ${esc(b.status)}">${statusText(b.status)}</span></td><td><div class="row-actions">${b.status!=='confirmed'?`<button class="small ghost" onclick="setStatus('${b.id}','confirmed')">確認</button>`:''}${b.status!=='cancelled'?`<button class="small ghost" onclick="setStatus('${b.id}','cancelled')">取消</button>`:''}${b.status!=='pending'?`<button class="small ghost" onclick="setStatus('${b.id}','pending')">待確認</button>`:''}<button class="small danger" onclick="deleteBooking('${b.id}')">刪除</button></div></td></tr>`).join('')}
@@ -182,37 +208,62 @@ $('openDayBtn').onclick=async()=>{const d=$('manageDate').value;const {error}=aw
 $('closeMonthBtn').onclick=async()=>{const b=monthBounds($('manageMonth').value);if(!b)return alert('請先選擇月份。');if(!confirm(`確定要將 ${b.label} 整個月份全部關閉嗎？`))return;const existing=new Set(blocked.filter(x=>x.blocked_date>=b.start&&x.blocked_date<=b.end).map(x=>x.blocked_date)),rows=[];for(let d=1;d<=b.days;d++){const ds=b.start.slice(0,8)+String(d).padStart(2,'0');if(!existing.has(ds))rows.push({blocked_date:ds,reason:'後台整月關閉'})}$('closeMonthBtn').disabled=true;try{if(rows.length){const {error}=await sb.from('blocked_dates').insert(rows);if(error)throw error}await loadBlocked();alert(`${b.label} 已整月關閉。`)}catch(e){alert('整月關閉失敗：'+e.message)}finally{$('closeMonthBtn').disabled=false}};
 $('openMonthBtn').onclick=async()=>{const b=monthBounds($('manageMonth').value);if(!b)return alert('請先選擇月份。');if(!confirm(`確定要解除 ${b.label} 的整月關閉嗎？\n實際可預約日期仍會依時段設定與最早預約天數決定。`))return;$('openMonthBtn').disabled=true;try{const {error}=await sb.from('blocked_dates').delete().gte('blocked_date',b.start).lte('blocked_date',b.end);if(error)throw error;await loadBlocked();alert(`${b.label} 已解除整月關閉。`)}catch(e){alert('整月開放失敗：'+e.message)}finally{$('openMonthBtn').disabled=false}};
 
-$('weekdaysBtn').onclick=()=>document.querySelectorAll('.dow').forEach(x=>x.checked=['1','2','3','4','5'].includes(x.value));
-$('allDaysBtn').onclick=()=>document.querySelectorAll('.dow').forEach(x=>x.checked=true);
-$('clearDaysBtn').onclick=()=>document.querySelectorAll('.dow').forEach(x=>x.checked=false);
+let bulkTimeValues=['10:00','14:00','18:00'];
 
-async function runBatch(open){
-  const s=$('batchStart').value,e=$('batchEnd').value,t=$('batchTime').value,sv=services('bsvc'),dows=new Set([...document.querySelectorAll('.dow:checked')].map(x=>Number(x.value)));
-  if(!s||!e||!t||!sv.length)return alert('請完整設定日期、時間與服務。');
-  if(!dows.size)return alert('請至少勾選一個星期。');
-  const start=new Date(s+'T00:00:00'),end=new Date(e+'T00:00:00');
-  if(end<start)return alert('結束日不能早於開始日。');
-  const days=Math.round((end-start)/86400000)+1;
-  if(days>180)return alert('一次最多批次 180 天。');
-  const btn=open?$('batchOpenBtn'):$('batchCloseBtn');
-  const verb=open?'開放':'關閉';
-  if(!confirm(`確定要批次${verb}所選日期、星期與 ${t} 時段嗎？`))return;
-  btn.disabled=true;
+function selectedBulkDates(){
+  return [...document.querySelectorAll('.bulkDateCheck:checked')].map(x=>x.value);
+}
+function updateBulkDateCount(){
+  $('bulkSelectedCount').textContent=`已選 ${selectedBulkDates().length} 天`;
+  document.querySelectorAll('.bulk-date').forEach(x=>x.classList.toggle('selected',!!x.querySelector('input')?.checked));
+}
+function renderBulkDates(){
+  const v=$('bulkMonth').value;if(!v){$('bulkDates').innerHTML='';return}
+  const [y,m]=v.split('-').map(Number),last=new Date(y,m,0).getDate(),names=['日','一','二','三','四','五','六'];
+  let h='';
+  for(let d=1;d<=last;d++){
+    const ds=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dow=new Date(ds+'T00:00:00').getDay();
+    h+=`<label class="bulk-date"><input type="checkbox" class="bulkDateCheck" value="${ds}"><span>${d}</span><span class="dow-label">${names[dow]}</span></label>`;
+  }
+  $('bulkDates').innerHTML=h;
+  document.querySelectorAll('.bulkDateCheck').forEach(x=>x.onchange=updateBulkDateCount);
+  updateBulkDateCount();
+}
+function renderBulkTimes(){
+  $('bulkTimes').innerHTML=bulkTimeValues.sort().map(t=>`<label class="bulk-time"><input type="checkbox" class="bulkTimeCheck" value="${t}" checked><span>${t}</span><button type="button" data-remove-time="${t}" title="移除">×</button></label>`).join('');
+  document.querySelectorAll('[data-remove-time]').forEach(b=>b.onclick=e=>{e.preventDefault();bulkTimeValues=bulkTimeValues.filter(t=>t!==b.dataset.removeTime);renderBulkTimes()});
+}
+$('bulkMonth').onchange=renderBulkDates;
+$('selectAllDatesBtn').onclick=()=>{document.querySelectorAll('.bulkDateCheck').forEach(x=>x.checked=true);updateBulkDateCount()};
+$('clearDatesBtn').onclick=()=>{document.querySelectorAll('.bulkDateCheck').forEach(x=>x.checked=false);updateBulkDateCount()};
+$('selectWeekdaysDatesBtn').onclick=()=>{document.querySelectorAll('.bulkDateCheck').forEach(x=>{const d=new Date(x.value+'T00:00:00').getDay();x.checked=d>=1&&d<=5});updateBulkDateCount()};
+$('addBulkTimeBtn').onclick=()=>{const t=$('bulkNewTime').value;if(!t)return alert('請先選時間。');if(!bulkTimeValues.includes(t))bulkTimeValues.push(t);$('bulkNewTime').value='';renderBulkTimes()};
+
+async function runMonthlyBulk(open){
+  const dates=selectedBulkDates(),times=[...document.querySelectorAll('.bulkTimeCheck:checked')].map(x=>x.value),sv=services('bulkSvc');
+  if(!dates.length)return alert('請先勾選至少一個日期。');
+  if(!sv.length)return alert('請至少勾選一種服務。');
+  if(!times.length)return alert('請至少勾選一個時間。');
+  const total=dates.length*times.length,verb=open?'開放':'關閉';
+  if(total>500)return alert('一次設定的時段太多，請分成兩次操作。');
+  if(!confirm(`確定一次${verb} ${dates.length} 天 × ${times.length} 個時間，共 ${total} 個時段嗎？`))return;
+  const btn=open?$('bulkOpenBtn'):$('bulkCloseBtn');btn.disabled=true;
   try{
     let count=0;
-    for(let d=new Date(start);d<=end;d.setDate(d.getDate()+1)){
-      if(!dows.has(d.getDay()))continue;
-      const ds=ymd(d);
-      const {error}=await sb.rpc('admin_save_slot_v2',{p_date:ds,p_time:t,p_open:open,p_note:null,p_allowed_services:sv});
-      if(error)throw error;
-      count++;
+    for(const ds of dates){
+      for(const t of times){
+        const {error}=await sb.rpc('admin_save_slot_v2',{p_date:ds,p_time:t,p_open:open,p_note:null,p_allowed_services:sv});
+        if(error)throw error;
+        count++;
+      }
     }
-    alert(`批次${verb}完成，共調整 ${count} 天。`);
+    alert(`完成！已一次${verb} ${count} 個時段。`);
     await loadDay();
   }catch(e){alert(`批次${verb}失敗：`+e.message)}finally{btn.disabled=false}
 }
-$('batchOpenBtn').onclick=()=>runBatch(true);
-$('batchCloseBtn').onclick=()=>runBatch(false);
+$('bulkOpenBtn').onclick=()=>runMonthlyBulk(true);
+$('bulkCloseBtn').onclick=()=>runMonthlyBulk(false);
 
 sb.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_IN'&&session)init()});init();
 </script>
