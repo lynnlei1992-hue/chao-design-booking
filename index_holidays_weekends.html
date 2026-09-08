@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>巢藝設計｜線上預約</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f3ef;--card:#fff;--ink:#24211d;--muted:#756f68;--line:#ded8cf;--accent:#5b4a3a}
+*{box-sizing:border-box}body{margin:0;font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;background:var(--bg);color:var(--ink)}
+header{background:#201d1a;color:#fff;padding:22px 28px;position:sticky;top:0;z-index:10}.brand{font-weight:700;letter-spacing:.12em}.brand small{display:block;font-weight:400;color:#cbc3bb;letter-spacing:.05em;margin-top:4px}
+main{max-width:1120px;margin:34px auto;padding:0 20px}.hero{display:grid;grid-template-columns:1.35fr .65fr;gap:22px;margin-bottom:24px}.hero-card,.info-card,.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 8px 24px rgba(44,37,30,.04)}.hero-card{padding:34px}.hero-card h1{font-size:34px;margin:0 0 14px}.hero-card p,.info-card p{color:var(--muted);line-height:1.9;white-space:pre-line}.info-card{padding:28px;background:#ece6de}.panel{padding:28px}
+.services{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.service{border:1px solid var(--line);background:white;border-radius:14px;padding:18px;text-align:left;cursor:pointer}.service strong{display:block;margin-bottom:6px}.service span{display:block;color:var(--muted);font-size:13px;line-height:1.75;white-space:pre-line}.service.selected{border:2px solid var(--accent);background:#f7f2ec}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.field label{display:block;font-size:14px;margin-bottom:7px;color:#4c453f}.field-note{margin:7px 2px 0;color:var(--muted);font-size:12px;line-height:1.7;white-space:pre-line}
+input{width:100%;padding:13px 14px;border:1px solid #cfc7be;border-radius:10px;background:white;font:inherit;color:var(--ink)}
+.calendar-wrap{display:grid;grid-template-columns:1fr 1fr;gap:18px}.calendar{border:1px solid var(--line);border-radius:14px;padding:16px}.cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.days,.dates{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center}.days div{font-size:12px;color:var(--muted);padding:7px}.date{padding:10px 0;border-radius:9px;cursor:pointer}.date.muted{color:#bbb;cursor:not-allowed}.date.available:hover{background:#eee8e1}.date.selected{background:var(--accent);color:white}.date.weekend{color:#b8453c}.date.holiday{color:#b8453c;font-weight:700}.date.selected.weekend,.date.selected.holiday{color:white}.holiday-name{display:block;font-size:9px;line-height:1.15;margin-top:2px;color:#b8453c;font-weight:500}.date.selected .holiday-name{color:white}
+.slots{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.slot{border:1px solid var(--line);background:white;border-radius:10px;padding:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}.slot input{width:auto;margin:0}.slot.selected{background:var(--accent);color:white;border-color:var(--accent)}
+.emptySlots,.slot-help{color:var(--muted);font-size:13px;line-height:1.7}.actions{display:flex;justify-content:flex-end;margin-top:24px}.btn{border:0;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;font:inherit}.btn.primary{background:var(--accent);color:white}.btn.ghost{background:#eee8e1;color:#4e453d}.btn:disabled{opacity:.55;cursor:not-allowed}.notice{padding:14px 16px;border-radius:10px;margin-top:14px;display:none}
+footer{text-align:center;color:#8a827a;padding:38px 10px 50px;font-size:13px;line-height:1.8;white-space:pre-line}#heroTitle,#reminderTitle{white-space:pre-line;line-height:1.45}.content-hidden{display:none!important}
+@media(max-width:800px){.hero,.calendar-wrap,.grid{grid-template-columns:1fr}.services{grid-template-columns:1fr}.hero-card h1{font-size:28px}}
+</style>
+</head>
+<body>
+<header><div class="brand">巢藝設計有限公司<small>INTERIOR DESIGN APPOINTMENT</small></div></header>
+<main>
+<div class="hero"><div class="hero-card"><h1 id="heroTitle"></h1><p id="heroText"></p></div><div class="info-card"><h3 id="reminderTitle"></h3><p id="serviceArea"></p><p id="budgetNote"></p><p id="measureNote"></p></div></div>
+<div class="panel">
+<h2>選擇服務項目</h2>
+<div class="services">
+<button type="button" class="service selected" data-service="初步諮詢"><strong>初步諮詢</strong><span id="consultDesc"></span></button>
+<button type="button" class="service" data-service="現場丈量"><strong>現場丈量</strong><span id="measureDesc"></span></button>
+<button type="button" class="service" data-service="設計會議"><strong>設計會議</strong><span id="meetingDesc"></span></button>
+</div>
+<h2 style="margin-top:28px">填寫預約資料</h2>
+<div class="grid">
+<div class="field"><label>名字 *</label><input id="name" placeholder="請輸入名字"></div>
+<div class="field"><label>電話 *</label><input id="phone" placeholder="請輸入聯絡電話"></div>
+<div class="field"><label>建案名稱 *</label><input id="projectName" placeholder="請輸入建案名稱"></div>
+<div class="field"><label id="addressLabel">地址 *</label><input id="address" placeholder="請輸入案場地址"><div id="addressNote" class="field-note"></div></div>
+</div>
+<h2 style="margin-top:28px">選擇日期與時段</h2>
+<div class="calendar-wrap">
+<div class="calendar"><div class="cal-head"><button type="button" class="btn ghost" id="prevMonth">‹</button><strong id="monthLabel"></strong><button type="button" class="btn ghost" id="nextMonth">›</button></div><div class="days"><div>日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div></div><div class="dates" id="dates"></div></div>
+<div><h3 style="margin-top:0">可預約時段</h3><p class="slot-help" id="choiceHelp"></p><p class="slot-help"><strong id="choiceCount"></strong></p><div class="slots" id="slots"></div><p class="emptySlots" id="slotHint">請先選擇有開放時段的日期。</p></div>
+</div>
+<div class="actions"><button type="button" class="btn primary" id="submitBtn">送出預約</button></div><div id="notice" class="notice"></div>
+</div></main><footer id="footerText"></footer>
+<script>
+const SUPABASE_URL='https://fswzgoobhdilyunipowb.supabase.co';
+const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZzd3pnb29iaGRpbHl1bmlwb3diIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0MjUyNjQsImV4cCI6MjEwNDAwMTI2NH0.ud-lArAq8ChHse5ykIb7sb2xWQWCYnDruT1Q1RZpK2I';
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY),$=id=>document.getElementById(id),pad=n=>String(n).padStart(2,'0');
+let selectedService='初步諮詢',selectedDate='',selectedChoices=new Set(),openRows=[];let viewDate=new Date();viewDate=new Date(viewDate.getFullYear(),viewDate.getMonth(),1);
+const iso=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const HOLIDAYS_2026={
+'2026-01-01':'元旦',
+'2026-02-14':'春節假期','2026-02-15':'春節假期','2026-02-16':'春節假期','2026-02-17':'春節','2026-02-18':'春節','2026-02-19':'春節','2026-02-20':'春節假期','2026-02-21':'春節假期','2026-02-22':'春節假期',
+'2026-02-27':'和平紀念日補假','2026-02-28':'和平紀念日',
+'2026-04-03':'兒童節補假','2026-04-04':'兒童節','2026-04-05':'清明節','2026-04-06':'清明節補假',
+'2026-05-01':'勞動節',
+'2026-06-19':'端午節',
+'2026-09-25':'中秋節','2026-09-28':'教師節',
+'2026-10-09':'國慶日補假','2026-10-10':'國慶日',
+'2026-10-23':'光復節補假','2026-10-25':'光復節',
+'2026-12-24':'行憲紀念日補假','2026-12-25':'行憲紀念日'
+};
+function showNotice(msg,ok=true){const n=$('notice');n.style.display='block';n.style.background=ok?'#edf6f0':'#fff0ee';n.style.color=ok?'#275a42':'#8b3d32';n.innerHTML=msg}
+function safeText(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])).replace(/\r?\n/g,'<br>')}
+const contentMap={hero_title:'heroTitle',hero_text:'heroText',reminder_title:'reminderTitle',service_area:'serviceArea',budget_note:'budgetNote',measure_note:'measureNote',consult_desc:'consultDesc',measure_desc:'measureDesc',meeting_desc:'meetingDesc',address_label:'addressLabel',address_note:'addressNote',footer_text:'footerText'};let successMessage='';
+function applyContentStyle(el,row){if(!el)return;const fonts={system:'"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif',noto:'"Noto Sans TC",sans-serif',microsoft:'"Microsoft JhengHei","PingFang TC",sans-serif',serif:'"Noto Serif TC","PMingLiU","Times New Roman",serif'};el.style.fontFamily=fonts[row.font_family]||fonts.system;if(row.font_size)el.style.fontSize=Number(row.font_size)+'px';else el.style.removeProperty('font-size');el.style.fontWeight=row.font_weight||'400';el.style.lineHeight=String(row.line_height||1.8);if(row.text_color)el.style.color=row.text_color}
+async function loadSiteContent(){for(const id of Object.values(contentMap)){const el=$(id);if(el){el.textContent='';el.classList.add('content-hidden')}}successMessage='';const {data,error}=await sb.from('site_content').select('*').order('sort_order');if(error)return;for(const row of data||[]){if(row.key==='success_message'){if(row.enabled)successMessage=row.value||'';continue}const id=contentMap[row.key],el=id&&$(id);if(!el)continue;el.textContent=row.value??'';el.classList.toggle('content-hidden',row.enabled===false);applyContentStyle(el,row)}}
+function monthRange(){const y=viewDate.getFullYear(),m=viewDate.getMonth(),last=new Date(y,m+1,0).getDate();return [`${y}-${pad(m+1)}-01`,`${y}-${pad(m+1)}-${pad(last)}`]}
+async function loadMonth(){selectedDate='';selectedChoices.clear();$('slots').innerHTML='';$('slotHint').style.display='block';updateChoiceCount();const [p_start,p_end]=monthRange();const {data,error}=await sb.rpc('get_open_slots_v3',{p_start,p_end,p_service:selectedService});if(error){openRows=[];renderCalendar();return showNotice('目前無法載入可預約時段：'+error.message,false)}openRows=data||[];renderCalendar()}
+function renderCalendar(){const y=viewDate.getFullYear(),m=viewDate.getMonth(),first=new Date(y,m,1).getDay(),last=new Date(y,m+1,0).getDate(),prevLast=new Date(y,m,0).getDate(),today=iso(new Date());$('monthLabel').textContent=`${y} 年 ${m+1} 月`;const availableDates=new Set(openRows.map(x=>String(x.slot_date)));let h='';for(let i=first-1;i>=0;i--)h+=`<div class="date muted">${prevLast-i}</div>`;for(let d=1;d<=last;d++){const ds=`${y}-${pad(m+1)}-${pad(d)}`,dow=new Date(y,m,d).getDay(),weekend=dow===0||dow===6,holiday=HOLIDAYS_2026[ds],cls=`${weekend?' weekend':''}${holiday?' holiday':''}`,label=holiday?`<span class="holiday-name">${holiday}</span>`:'';h+=ds<today||!availableDates.has(ds)?`<div class="date muted${cls}">${d}${label}</div>`:`<div class="date available${cls} ${selectedDate===ds?'selected':''}" data-date="${ds}">${d}${label}</div>`}const remain=(7-(first+last)%7)%7;for(let d=1;d<=remain;d++)h+=`<div class="date muted">${d}</div>`;$('dates').innerHTML=h;document.querySelectorAll('.date.available').forEach(el=>el.onclick=()=>pickDate(el.dataset.date))}
+function updateChoiceCount(){const multi=selectedService==='現場丈量',count=$('choiceCount'),help=$('choiceHelp');if(help)help.textContent=multi?'可選不同日期與時段，最多 3 個。':'請選擇 1 個日期與時段。';if(count)count.textContent=multi?`已選 ${selectedChoices.size} / 3 個時段`:''}
+function pickDate(ds){selectedDate=ds;renderCalendar();const rows=openRows.filter(x=>String(x.slot_date)===ds);$('slots').innerHTML=rows.map(x=>{const t=String(x.slot_time).slice(0,5),key=`${ds}|${t}`,checked=selectedChoices.has(key);return `<label class="slot ${checked?'selected':''}"><input type="checkbox" value="${t}" ${checked?'checked':''}><span>${t}</span></label>`}).join('');$('slotHint').style.display=rows.length?'none':'block';document.querySelectorAll('.slot input').forEach(el=>el.onchange=()=>{const wrap=el.closest('.slot'),key=`${ds}|${el.value}`;if(el.checked){if(selectedService!=='現場丈量'){selectedChoices.clear();document.querySelectorAll('.slot input').forEach(x=>{if(x!==el){x.checked=false;x.closest('.slot').classList.remove('selected')}})}else if(selectedChoices.size>=3&&!selectedChoices.has(key)){el.checked=false;wrap.classList.remove('selected');return showNotice('現場丈量最多只能選擇 3 個日期＋時段。',false)}selectedChoices.add(key)}else selectedChoices.delete(key);wrap.classList.toggle('selected',el.checked);updateChoiceCount()});updateChoiceCount()}
+document.querySelectorAll('.service').forEach(el=>el.onclick=()=>{document.querySelectorAll('.service').forEach(x=>x.classList.remove('selected'));el.classList.add('selected');selectedService=el.dataset.service;selectedChoices.clear();updateChoiceCount();loadMonth()});
+$('prevMonth').onclick=()=>{viewDate=new Date(viewDate.getFullYear(),viewDate.getMonth()-1,1);loadMonth()};$('nextMonth').onclick=()=>{viewDate=new Date(viewDate.getFullYear(),viewDate.getMonth()+1,1);loadMonth()};
+$('submitBtn').onclick=async()=>{const name=$('name').value.trim(),phone=$('phone').value.trim(),projectName=$('projectName').value.trim(),address=$('address').value.trim(),choices=[...selectedChoices].sort().map(k=>{const [date,time]=k.split('|');return {date,time}});if(!name||!phone||!projectName||!address||!choices.length)return showNotice('請完整填寫名字、電話、建案名稱、地址，並至少選擇一個時段。',false);const b=$('submitBtn');b.disabled=true;b.textContent='送出中…';let completed=[];try{for(const c of choices){const {error}=await sb.rpc('create_booking_v3',{p_date:c.date,p_time:c.time,p_service:selectedService,p_customer_name:name,p_phone:phone,p_project_name:projectName,p_address:address});if(error)throw new Error(`${c.date} ${c.time}｜${error.message||'預約失敗'}`);completed.push(`${c.date} ${c.time}`)}showNotice(`預約已送出：<strong>${completed.join('、')}</strong>｜${selectedService}<br>${safeText(successMessage)}`,true);$('name').value='';$('phone').value='';$('projectName').value='';$('address').value=''}catch(e){let msg=e.message||'預約送出失敗。';if(completed.length)msg=`已成功送出 ${completed.join('、')}；其餘時段未完成。${msg}`;showNotice(msg,false)}finally{b.disabled=false;b.textContent='送出預約';await loadMonth()}};
+loadSiteContent();loadMonth();
+</script>
+</body></html>
