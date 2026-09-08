@@ -3,30 +3,7 @@
 <head>
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>巢藝設計｜預約管理後台</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-const ADMIN_HOLIDAYS_2026={
-'2026-01-01':'元旦',
-'2026-02-14':'春節假期','2026-02-15':'春節假期','2026-02-16':'春節假期','2026-02-17':'春節','2026-02-18':'春節','2026-02-19':'春節','2026-02-20':'春節假期','2026-02-21':'春節假期','2026-02-22':'春節假期',
-'2026-02-27':'和平紀念日補假','2026-02-28':'和平紀念日',
-'2026-04-03':'兒童節補假','2026-04-04':'兒童節','2026-04-05':'清明節','2026-04-06':'清明節補假',
-'2026-05-01':'勞動節','2026-06-19':'端午節','2026-09-25':'中秋節','2026-09-28':'教師節',
-'2026-10-09':'國慶日補假','2026-10-10':'國慶日','2026-10-23':'光復節補假','2026-10-25':'光復節',
-'2026-12-24':'行憲紀念日補假','2026-12-25':'行憲紀念日'
-};
-let adminCalView=new Date();adminCalView=new Date(adminCalView.getFullYear(),adminCalView.getMonth(),1);
-function renderAdminHolidayCalendar(){
- const y=adminCalView.getFullYear(),m=adminCalView.getMonth(),first=new Date(y,m,1).getDay(),last=new Date(y,m+1,0).getDate(),pad2=n=>String(n).padStart(2,'0');
- const label=document.getElementById('adminCalLabel'),box=document.getElementById('adminCalDates');if(!label||!box)return;
- label.textContent=`${y} 年 ${m+1} 月`;let h='';
- for(let i=0;i<first;i++)h+='<div></div>';
- for(let d=1;d<=last;d++){const ds=`${y}-${pad2(m+1)}-${pad2(d)}`,dow=new Date(y,m,d).getDay(),weekend=dow===0||dow===6,holiday=ADMIN_HOLIDAYS_2026[ds];h+=`<div class="admin-day${weekend?' weekend':''}${holiday?' holiday':''}">${d}${holiday?`<span class="admin-holiday-name">${holiday}</span>`:''}</div>`}
- box.innerHTML=h;
-}
-document.getElementById('adminCalPrev')?.addEventListener('click',()=>{adminCalView=new Date(adminCalView.getFullYear(),adminCalView.getMonth()-1,1);renderAdminHolidayCalendar()});
-document.getElementById('adminCalNext')?.addEventListener('click',()=>{adminCalView=new Date(adminCalView.getFullYear(),adminCalView.getMonth()+1,1);renderAdminHolidayCalendar()});
-renderAdminHolidayCalendar();
-
-</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--bg:#f5f3ef;--card:#fff;--ink:#24211d;--muted:#756f68;--line:#ded8cf;--accent:#5b4a3a;--danger:#9b3f3f}
 *{box-sizing:border-box}body{margin:0;font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;background:var(--bg);color:var(--ink)}header{background:#201d1a;color:#fff;padding:20px 24px;display:flex;justify-content:space-between;gap:16px;position:sticky;top:0;z-index:10}main{max-width:1250px;margin:28px auto;padding:0 18px}.brand{font-weight:700;letter-spacing:.1em}.brand small{display:block;font-weight:400;color:#cbc3bb;margin-top:4px}.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px;margin-bottom:20px;box-shadow:0 8px 24px rgba(44,37,30,.04)}.login{max-width:480px;margin:60px auto}.muted{color:var(--muted);line-height:1.65}label{display:block;font-size:14px;margin:12px 0 7px}input,select,textarea{width:100%;padding:12px 13px;border:1px solid #cfc7be;border-radius:10px;background:#fff;font:inherit}textarea{min-height:100px;resize:vertical}button{border:0;border-radius:10px;padding:11px 15px;font-weight:700;cursor:pointer}.primary{background:var(--accent);color:#fff}.ghost{background:#eee8e1;color:#4e453d}.danger{background:#f6e9e9;color:var(--danger)}.small{padding:7px 10px;font-size:12px}.full{width:100%;margin-top:16px}.hidden{display:none!important}.notice{display:none;margin-top:14px;padding:12px 14px;border-radius:10px;background:#edf6f0;color:#275a42}.notice.err{background:#f8eaea;color:#843636}.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.section-head h2{margin:0}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}.stat{background:#f8f6f2;border:1px solid var(--line);border-radius:14px;padding:16px}.stat b{display:block;font-size:26px;margin-top:6px}.checks{display:flex;gap:10px;flex-wrap:wrap}.checks label{display:flex;gap:6px;align-items:center;margin:0}.checks input{width:auto}.toolbar{display:grid;grid-template-columns:1.3fr .8fr .8fr auto;gap:10px;align-items:end;margin-bottom:16px}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}table{width:100%;border-collapse:collapse;min-width:1080px}th,td{padding:12px 10px;border-bottom:1px solid var(--line);text-align:left;font-size:14px;vertical-align:middle}th{background:#f8f6f2;color:var(--muted)}.row-actions{display:flex;gap:6px;flex-wrap:wrap}.batch-wrap{padding:18px;border:1px solid var(--line);border-radius:14px;background:#faf8f5}.bulk-date-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:14px}.bulk-date{border:1px solid var(--line);border-radius:10px;padding:10px 6px;background:#fff;display:flex;align-items:center;justify-content:center;gap:5px;cursor:pointer;min-height:44px}.bulk-date input{width:auto;margin:0}.bulk-date.selected{background:#eee5db;border-color:#9e8974}.bulk-time-list{display:flex;gap:8px;flex-wrap:wrap;padding:8px 0}.bulk-time{display:flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:9px;padding:8px 10px;background:#fff}.bulk-time input{width:auto}.bulk-time button{padding:1px 5px;background:transparent;color:var(--danger)}.bulk-setting-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:16px}.batch-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.content-field{border:1px solid var(--line);border-radius:12px;padding:12px;background:#faf8f5}.lead-day-field{background:#f3eee8}.schedule-top,.month-manage{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:end}.slot-form{display:grid;grid-template-columns:.7fr 1.4fr .8fr 1.1fr auto;gap:10px;align-items:end;margin-top:16px}.slot-list{display:grid;gap:8px;margin-top:14px}.slot-item{display:grid;grid-template-columns:90px 1fr auto;gap:10px;align-items:center;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:#faf8f5}.closed{opacity:.6}
@@ -40,6 +17,9 @@ renderAdminHolidayCalendar();
 .admin-day.weekend,.admin-day.holiday{color:#b8453c}
 .admin-day.holiday{font-weight:700}
 .admin-holiday-name{display:block;font-size:9px;line-height:1.15;margin-top:2px;color:#b8453c;font-weight:500}
+.bulk-date.weekend,.bulk-date.holiday{color:#b8453c}
+.bulk-date.holiday{font-weight:700}
+.bulk-holiday-name{display:block;font-size:9px;line-height:1.15;margin-top:2px;color:#b8453c;font-weight:500}
 </style></head>
 <body>
 <header><div class="brand">巢藝設計有限公司<small>APPOINTMENT ADMIN</small></div><div><span id="who"></span> <button id="logoutBtn" class="ghost small hidden">登出</button></div></header>
@@ -90,7 +70,7 @@ $('closeDayBtn').onclick=async()=>{const d=$('manageDate').value;if(!blocked.som
 function monthBounds(v){if(!v)return null;const [y,m]=v.split('-').map(Number),last=new Date(y,m,0).getDate();return {start:`${y}-${String(m).padStart(2,'0')}-01`,end:`${y}-${String(m).padStart(2,'0')}-${String(last).padStart(2,'0')}`,days:last}}
 $('closeMonthBtn').onclick=async()=>{const b=monthBounds($('manageMonth').value);if(!b)return;const existing=new Set(blocked.filter(x=>x.blocked_date>=b.start&&x.blocked_date<=b.end).map(x=>x.blocked_date)),rows=[];for(let d=1;d<=b.days;d++){const ds=b.start.slice(0,8)+String(d).padStart(2,'0');if(!existing.has(ds))rows.push({blocked_date:ds,reason:'後台整月關閉'})}if(rows.length)await sb.from('blocked_dates').insert(rows);await loadBlocked()};$('openMonthBtn').onclick=async()=>{const b=monthBounds($('manageMonth').value);if(!b)return;await sb.from('blocked_dates').delete().gte('blocked_date',b.start).lte('blocked_date',b.end);await loadBlocked()};
 function selectedBulkDates(){return [...document.querySelectorAll('.bulkDateCheck:checked')].map(x=>x.value)}function updateBulkDateCount(){$('bulkSelectedCount').textContent=`已選 ${selectedBulkDates().length} 天`;document.querySelectorAll('.bulk-date').forEach(x=>x.classList.toggle('selected',!!x.querySelector('input')?.checked))}
-function renderBulkDates(){const v=$('bulkMonth').value;if(!v)return;const [y,m]=v.split('-').map(Number),last=new Date(y,m,0).getDate(),names=['日','一','二','三','四','五','六'];$('bulkDates').innerHTML=Array.from({length:last},(_,i)=>{const d=i+1,ds=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`,dow=new Date(ds+'T00:00:00').getDay();return `<label class="bulk-date"><input type="checkbox" class="bulkDateCheck" value="${ds}"><span>${d}</span><small>${names[dow]}</small></label>`}).join('');document.querySelectorAll('.bulkDateCheck').forEach(x=>x.onchange=updateBulkDateCount);updateBulkDateCount()}
+function renderBulkDates(){const v=$('bulkMonth').value;if(!v)return;const [y,m]=v.split('-').map(Number),last=new Date(y,m,0).getDate(),names=['日','一','二','三','四','五','六'];$('bulkDates').innerHTML=Array.from({length:last},(_,i)=>{const d=i+1,ds=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`,dow=new Date(ds+'T00:00:00').getDay(),weekend=dow===0||dow===6,holiday=ADMIN_HOLIDAYS_2026[ds];return `<label class="bulk-date${weekend?' weekend':''}${holiday?' holiday':''}"><input type="checkbox" class="bulkDateCheck" value="${ds}"><span>${d}</span><small>${names[dow]}</small>${holiday?`<small class="bulk-holiday-name">${holiday}</small>`:''}</label>`}).join('');document.querySelectorAll('.bulkDateCheck').forEach(x=>x.onchange=updateBulkDateCount);updateBulkDateCount()}
 function renderBulkTimes(){$('bulkTimes').innerHTML=bulkTimeValues.sort().map(t=>`<label class="bulk-time"><input type="checkbox" class="bulkTimeCheck" value="${t}" checked><span>${t}</span><button type="button" data-remove-time="${t}">×</button></label>`).join('');document.querySelectorAll('[data-remove-time]').forEach(b=>b.onclick=e=>{e.preventDefault();bulkTimeValues=bulkTimeValues.filter(t=>t!==b.dataset.removeTime);renderBulkTimes()})}
 $('bulkMonth').onchange=renderBulkDates;$('selectAllDatesBtn').onclick=()=>{document.querySelectorAll('.bulkDateCheck').forEach(x=>x.checked=true);updateBulkDateCount()};$('clearDatesBtn').onclick=()=>{document.querySelectorAll('.bulkDateCheck').forEach(x=>x.checked=false);updateBulkDateCount()};$('selectWeekdaysDatesBtn').onclick=()=>{document.querySelectorAll('.bulkDateCheck').forEach(x=>{const d=new Date(x.value+'T00:00:00').getDay();x.checked=d>=1&&d<=5});updateBulkDateCount()};$('addBulkTimeBtn').onclick=()=>{const t=$('bulkNewTime').value;if(t&&!bulkTimeValues.includes(t))bulkTimeValues.push(t);$('bulkNewTime').value='';renderBulkTimes()};
 async function replaceServiceSchedule(){const dates=selectedBulkDates(),times=[...document.querySelectorAll('.bulkTimeCheck:checked')].map(x=>x.value),sv=services('bulkSvc');if(!dates.length||!times.length||!sv.length)return alert('日期、服務、時間都至少選一個。');if(!confirm(`將 ${dates.length} 天的「${sv.join('、')}」時段覆蓋成：${times.join('、')}？`))return;$('bulkApplyBtn').disabled=true;try{for(const d of dates){await sb.from('blocked_dates').delete().eq('blocked_date',d);const {data,error}=await sb.rpc('admin_get_slots_v2',{p_start:d,p_end:d});if(error)throw error;const current=data||[],byTime=new Map(current.map(s=>[fmt(s.slot_time),s]));for(const s of current){const t=fmt(s.slot_time),kept=(s.allowed_services||[]).filter(x=>!sv.includes(x));const desired=times.includes(t);const next=[...new Set([...kept,...(desired?sv:[])])];if(!next.length){if(s.is_booked){const {error:e}=await sb.rpc('admin_save_slot_v2',{p_date:d,p_time:t,p_open:false,p_note:s.note||null,p_allowed_services:s.allowed_services||sv});if(e)throw e}else{const {error:e}=await sb.rpc('admin_remove_slot_v2',{p_date:d,p_time:t});if(e)throw e}}else{const {error:e}=await sb.rpc('admin_save_slot_v2',{p_date:d,p_time:t,p_open:desired?true:s.is_open,p_note:s.note||null,p_allowed_services:next});if(e)throw e}}for(const t of times){if(!byTime.has(t)){const {error:e}=await sb.rpc('admin_save_slot_v2',{p_date:d,p_time:t,p_open:true,p_note:null,p_allowed_services:sv});if(e)throw e}}}alert('完成！所選服務時段已依這次勾選內容覆蓋，舊時間已同步取消。');await loadDay();await loadBlocked()}catch(e){alert('套用失敗：'+e.message)}finally{$('bulkApplyBtn').disabled=false}}
@@ -99,4 +79,27 @@ $('bulkApplyBtn').onclick=replaceServiceSchedule;$('bulkCloseBtn').onclick=close
 async function loadAll(){await Promise.all([loadBookings(),loadBlocked(),loadSiteContent(),loadDay()])}
 async function init(){const {data:{session}}=await sb.auth.getSession();if(!session)return;$('loginView').classList.add('hidden');$('adminView').classList.remove('hidden');$('logoutBtn').classList.remove('hidden');$('who').textContent=session.user.email||'';const {data:ok}=await sb.rpc('is_admin');if(!ok){await sb.auth.signOut();return location.reload()}const today=ymd(new Date());$('manageDate').value=today;$('manageMonth').value=today.slice(0,7);$('bulkMonth').value=today.slice(0,7);renderBulkDates();renderBulkTimes();await loadAll()}
 $('manageDate').onchange=()=>{loadDay();renderDayState()};sb.auth.onAuthStateChange((e,s)=>{if(e==='SIGNED_IN'&&s)setTimeout(init,0)});init();
+
+const ADMIN_HOLIDAYS_2026={
+'2026-01-01':'元旦',
+'2026-02-14':'春節假期','2026-02-15':'春節假期','2026-02-16':'春節假期','2026-02-17':'春節','2026-02-18':'春節','2026-02-19':'春節','2026-02-20':'春節假期','2026-02-21':'春節假期','2026-02-22':'春節假期',
+'2026-02-27':'和平紀念日補假','2026-02-28':'和平紀念日',
+'2026-04-03':'兒童節補假','2026-04-04':'兒童節','2026-04-05':'清明節','2026-04-06':'清明節補假',
+'2026-05-01':'勞動節','2026-06-19':'端午節','2026-09-25':'中秋節','2026-09-28':'教師節',
+'2026-10-09':'國慶日補假','2026-10-10':'國慶日','2026-10-23':'光復節補假','2026-10-25':'光復節',
+'2026-12-24':'行憲紀念日補假','2026-12-25':'行憲紀念日'
+};
+let adminCalView=new Date();adminCalView=new Date(adminCalView.getFullYear(),adminCalView.getMonth(),1);
+function renderAdminHolidayCalendar(){
+ const y=adminCalView.getFullYear(),m=adminCalView.getMonth(),first=new Date(y,m,1).getDay(),last=new Date(y,m+1,0).getDate(),pad2=n=>String(n).padStart(2,'0');
+ const label=document.getElementById('adminCalLabel'),box=document.getElementById('adminCalDates');if(!label||!box)return;
+ label.textContent=`${y} 年 ${m+1} 月`;let h='';
+ for(let i=0;i<first;i++)h+='<div></div>';
+ for(let d=1;d<=last;d++){const ds=`${y}-${pad2(m+1)}-${pad2(d)}`,dow=new Date(y,m,d).getDay(),weekend=dow===0||dow===6,holiday=ADMIN_HOLIDAYS_2026[ds];h+=`<div class="admin-day${weekend?' weekend':''}${holiday?' holiday':''}">${d}${holiday?`<span class="admin-holiday-name">${holiday}</span>`:''}</div>`}
+ box.innerHTML=h;
+}
+document.getElementById('adminCalPrev')?.addEventListener('click',()=>{adminCalView=new Date(adminCalView.getFullYear(),adminCalView.getMonth()-1,1);renderAdminHolidayCalendar()});
+document.getElementById('adminCalNext')?.addEventListener('click',()=>{adminCalView=new Date(adminCalView.getFullYear(),adminCalView.getMonth()+1,1);renderAdminHolidayCalendar()});
+renderAdminHolidayCalendar();
+
 </script></body></html>
