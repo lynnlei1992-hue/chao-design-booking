@@ -3,11 +3,43 @@
 <head>
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>巢藝設計｜預約管理後台</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+const ADMIN_HOLIDAYS_2026={
+'2026-01-01':'元旦',
+'2026-02-14':'春節假期','2026-02-15':'春節假期','2026-02-16':'春節假期','2026-02-17':'春節','2026-02-18':'春節','2026-02-19':'春節','2026-02-20':'春節假期','2026-02-21':'春節假期','2026-02-22':'春節假期',
+'2026-02-27':'和平紀念日補假','2026-02-28':'和平紀念日',
+'2026-04-03':'兒童節補假','2026-04-04':'兒童節','2026-04-05':'清明節','2026-04-06':'清明節補假',
+'2026-05-01':'勞動節','2026-06-19':'端午節','2026-09-25':'中秋節','2026-09-28':'教師節',
+'2026-10-09':'國慶日補假','2026-10-10':'國慶日','2026-10-23':'光復節補假','2026-10-25':'光復節',
+'2026-12-24':'行憲紀念日補假','2026-12-25':'行憲紀念日'
+};
+let adminCalView=new Date();adminCalView=new Date(adminCalView.getFullYear(),adminCalView.getMonth(),1);
+function renderAdminHolidayCalendar(){
+ const y=adminCalView.getFullYear(),m=adminCalView.getMonth(),first=new Date(y,m,1).getDay(),last=new Date(y,m+1,0).getDate(),pad2=n=>String(n).padStart(2,'0');
+ const label=document.getElementById('adminCalLabel'),box=document.getElementById('adminCalDates');if(!label||!box)return;
+ label.textContent=`${y} 年 ${m+1} 月`;let h='';
+ for(let i=0;i<first;i++)h+='<div></div>';
+ for(let d=1;d<=last;d++){const ds=`${y}-${pad2(m+1)}-${pad2(d)}`,dow=new Date(y,m,d).getDay(),weekend=dow===0||dow===6,holiday=ADMIN_HOLIDAYS_2026[ds];h+=`<div class="admin-day${weekend?' weekend':''}${holiday?' holiday':''}">${d}${holiday?`<span class="admin-holiday-name">${holiday}</span>`:''}</div>`}
+ box.innerHTML=h;
+}
+document.getElementById('adminCalPrev')?.addEventListener('click',()=>{adminCalView=new Date(adminCalView.getFullYear(),adminCalView.getMonth()-1,1);renderAdminHolidayCalendar()});
+document.getElementById('adminCalNext')?.addEventListener('click',()=>{adminCalView=new Date(adminCalView.getFullYear(),adminCalView.getMonth()+1,1);renderAdminHolidayCalendar()});
+renderAdminHolidayCalendar();
+
+</script>
 <style>
 :root{--bg:#f5f3ef;--card:#fff;--ink:#24211d;--muted:#756f68;--line:#ded8cf;--accent:#5b4a3a;--danger:#9b3f3f}
 *{box-sizing:border-box}body{margin:0;font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;background:var(--bg);color:var(--ink)}header{background:#201d1a;color:#fff;padding:20px 24px;display:flex;justify-content:space-between;gap:16px;position:sticky;top:0;z-index:10}main{max-width:1250px;margin:28px auto;padding:0 18px}.brand{font-weight:700;letter-spacing:.1em}.brand small{display:block;font-weight:400;color:#cbc3bb;margin-top:4px}.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px;margin-bottom:20px;box-shadow:0 8px 24px rgba(44,37,30,.04)}.login{max-width:480px;margin:60px auto}.muted{color:var(--muted);line-height:1.65}label{display:block;font-size:14px;margin:12px 0 7px}input,select,textarea{width:100%;padding:12px 13px;border:1px solid #cfc7be;border-radius:10px;background:#fff;font:inherit}textarea{min-height:100px;resize:vertical}button{border:0;border-radius:10px;padding:11px 15px;font-weight:700;cursor:pointer}.primary{background:var(--accent);color:#fff}.ghost{background:#eee8e1;color:#4e453d}.danger{background:#f6e9e9;color:var(--danger)}.small{padding:7px 10px;font-size:12px}.full{width:100%;margin-top:16px}.hidden{display:none!important}.notice{display:none;margin-top:14px;padding:12px 14px;border-radius:10px;background:#edf6f0;color:#275a42}.notice.err{background:#f8eaea;color:#843636}.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.section-head h2{margin:0}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}.stat{background:#f8f6f2;border:1px solid var(--line);border-radius:14px;padding:16px}.stat b{display:block;font-size:26px;margin-top:6px}.checks{display:flex;gap:10px;flex-wrap:wrap}.checks label{display:flex;gap:6px;align-items:center;margin:0}.checks input{width:auto}.toolbar{display:grid;grid-template-columns:1.3fr .8fr .8fr auto;gap:10px;align-items:end;margin-bottom:16px}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}table{width:100%;border-collapse:collapse;min-width:1080px}th,td{padding:12px 10px;border-bottom:1px solid var(--line);text-align:left;font-size:14px;vertical-align:middle}th{background:#f8f6f2;color:var(--muted)}.row-actions{display:flex;gap:6px;flex-wrap:wrap}.batch-wrap{padding:18px;border:1px solid var(--line);border-radius:14px;background:#faf8f5}.bulk-date-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:14px}.bulk-date{border:1px solid var(--line);border-radius:10px;padding:10px 6px;background:#fff;display:flex;align-items:center;justify-content:center;gap:5px;cursor:pointer;min-height:44px}.bulk-date input{width:auto;margin:0}.bulk-date.selected{background:#eee5db;border-color:#9e8974}.bulk-time-list{display:flex;gap:8px;flex-wrap:wrap;padding:8px 0}.bulk-time{display:flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:9px;padding:8px 10px;background:#fff}.bulk-time input{width:auto}.bulk-time button{padding:1px 5px;background:transparent;color:var(--danger)}.bulk-setting-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:16px}.batch-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.content-field{border:1px solid var(--line);border-radius:12px;padding:12px;background:#faf8f5}.lead-day-field{background:#f3eee8}.schedule-top,.month-manage{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:end}.slot-form{display:grid;grid-template-columns:.7fr 1.4fr .8fr 1.1fr auto;gap:10px;align-items:end;margin-top:16px}.slot-list{display:grid;gap:8px;margin-top:14px}.slot-item{display:grid;grid-template-columns:90px 1fr auto;gap:10px;align-items:center;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:#faf8f5}.closed{opacity:.6}
 @media(max-width:850px){header{flex-direction:column}.stats{grid-template-columns:1fr 1fr}.toolbar,.schedule-top,.month-manage,.slot-form,.bulk-setting-grid{grid-template-columns:1fr}.content-grid{grid-template-columns:1fr}.bulk-date-grid{grid-template-columns:repeat(4,1fr)}.card{padding:18px}}
+
+.admin-cal{margin-top:18px;border-top:1px solid var(--line);padding-top:18px}
+.admin-cal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.admin-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;text-align:center}
+.admin-cal-grid .dow{font-size:12px;color:var(--muted);padding:6px 0}
+.admin-day{min-height:48px;padding:6px 2px;border-radius:8px;font-size:13px}
+.admin-day.weekend,.admin-day.holiday{color:#b8453c}
+.admin-day.holiday{font-weight:700}
+.admin-holiday-name{display:block;font-size:9px;line-height:1.15;margin-top:2px;color:#b8453c;font-weight:500}
 </style></head>
 <body>
 <header><div class="brand">巢藝設計有限公司<small>APPOINTMENT ADMIN</small></div><div><span id="who"></span> <button id="logoutBtn" class="ghost small hidden">登出</button></div></header>
@@ -28,7 +60,12 @@
 <div class="batch-actions"><button id="bulkApplyBtn" class="primary">套用所選時間（覆蓋）</button><button id="bulkCloseBtn" class="danger">關閉所選時間</button></div>
 <div class="muted" style="margin-top:8px">例：選 9 月平日＋現場丈量，只勾 14:00、16:00 後套用，原本 10:00 的丈量會自動取消。</div>
 </div>
-<div style="margin-top:24px;padding-top:18px;border-top:1px solid var(--line)"><div class="section-head"><h3>單日微調</h3></div><div class="schedule-top"><div><label>管理日期</label><input id="manageDate" type="date"></div><button id="closeDayBtn" class="danger">整天關閉</button><button id="openDayBtn" class="ghost">重新開放</button></div><p id="dayState" class="muted"></p><div class="month-manage"><div><label>整月管理</label><input id="manageMonth" type="month"></div><button id="closeMonthBtn" class="danger">整月關閉</button><button id="openMonthBtn" class="ghost">整月重新開放</button></div><div class="slot-form"><div><label>時間</label><input id="slotTime" type="time" step="300"></div><div><label>開放服務</label><div class="checks"><label><input type="checkbox" class="svc" value="初步諮詢" checked>初步諮詢</label><label><input type="checkbox" class="svc" value="現場丈量" checked>現場丈量</label><label><input type="checkbox" class="svc" value="設計會議" checked>設計會議</label></div></div><div><label>狀態</label><select id="slotOpen"><option value="true">開放</option><option value="false">關閉</option></select></div><div><label>備註</label><input id="slotNote"></div><button id="saveSlotBtn" class="primary">新增 / 更新時段</button></div><div id="slotList" class="slot-list"></div></div>
+<div style="margin-top:24px;padding-top:18px;border-top:1px solid var(--line)"><div class="section-head"><h3>單日微調</h3></div><div class="schedule-top"><div><label>管理日期</label><input id="manageDate" type="date"></div><button id="closeDayBtn" class="danger">整天關閉</button><button id="openDayBtn" class="ghost">重新開放</button></div><p id="dayState" class="muted"></p><div class="month-manage"><div><label>整月管理</label><input id="manageMonth" type="month"></div><button id="closeMonthBtn" class="danger">整月關閉</button><button id="openMonthBtn" class="ghost">整月重新開放</button></div><div class="slot-form"><div><label>時間</label><input id="slotTime" type="time" step="300"></div><div><label>開放服務</label><div class="checks"><label><input type="checkbox" class="svc" value="初步諮詢" checked>初步諮詢</label><label><input type="checkbox" class="svc" value="現場丈量" checked>現場丈量</label><label><input type="checkbox" class="svc" value="設計會議" checked>設計會議</label></div></div><div><label>狀態</label><select id="slotOpen"><option value="true">開放</option><option value="false">關閉</option></select></div><div><label>備註</label><input id="slotNote"></div><button id="saveSlotBtn" class="primary">新增 / 更新時段</button></div><div id="slotList" class="slot-list"></div><div class="admin-cal">
+<div class="section-head"><h3>假日行事曆</h3><span class="muted">週六、週日及國定假日以紅色標示；僅供排程提醒，不會自動關閉時段。</span></div>
+<div class="admin-cal-head"><button type="button" class="ghost" id="adminCalPrev">‹</button><strong id="adminCalLabel"></strong><button type="button" class="ghost" id="adminCalNext">›</button></div>
+<div class="admin-cal-grid"><div class="dow">日</div><div class="dow">一</div><div class="dow">二</div><div class="dow">三</div><div class="dow">四</div><div class="dow">五</div><div class="dow">六</div></div>
+<div class="admin-cal-grid" id="adminCalDates"></div>
+</div></div>
 </div></section></main>
 <script>
 const SUPABASE_URL='https://fswzgoobhdilyunipowb.supabase.co',SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZzd3pnb29iaGRpbHl1bmlwb3diIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0MjUyNjQsImV4cCI6MjEwNDAwMTI2NH0.ud-lArAq8ChHse5ykIb7sb2xWQWCYnDruT1Q1RZpK2I';
