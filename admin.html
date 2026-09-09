@@ -105,9 +105,45 @@ async function loadDay(){const d=$('manageDate').value;if(!d)return;const {data,
 function renderSlots(){$('slotList').innerHTML=slots.length?slots.map(s=>`<div class="slot-item ${s.is_open?'':'closed'}"><strong>${fmt(s.slot_time)}</strong><div>${(s.allowed_services||[]).join('、')}<div class="muted">${s.is_open?'開放':'關閉'}${s.is_booked?'｜已有預約':''}</div></div><div class="row-actions"><button class="small ghost" onclick="editSlot('${fmt(s.slot_time)}')">編輯</button><button class="small danger" onclick="removeSlot('${fmt(s.slot_time)}')">刪除</button></div></div>`).join(''):'<span class="muted">這一天目前沒有設定時段。</span>'}
 window.editSlot=time=>{const s=slots.find(x=>fmt(x.slot_time)===time);if(!s)return;$('slotTime').value=time;$('slotOpen').value=String(s.is_open);$('slotNote').value=s.note||'';document.querySelectorAll('.svc').forEach(x=>x.checked=(s.allowed_services||[]).includes(x.value))};window.removeSlot=async time=>{if(!confirm('確定刪除？'))return;const {error}=await sb.rpc('admin_remove_slot_v2',{p_date:$('manageDate').value,p_time:time});if(error)return alert(error.message);await loadDay()};
 $('saveSlotBtn').onclick=async()=>{const d=$('manageDate').value,t=$('slotTime').value,sv=services('svc');if(!d||!t||!sv.length)return alert('請完整選擇日期、時間與服務。');const {error}=await sb.rpc('admin_save_slot_v2',{p_date:d,p_time:t,p_open:$('slotOpen').value==='true',p_note:$('slotNote').value.trim()||null,p_allowed_services:sv});if(error)return alert(error.message);await sb.from('blocked_dates').delete().eq('blocked_date',d);await loadDay();await loadBlocked()};
-$('closeDayBtn').onclick=async()=>{const d=$('manageDate').value;if(!blocked.some(x=>x.blocked_date===d))await sb.from('blocked_dates').insert({blocked_date:d,reason:'後台整天關閉'});await loadBlocked()};$('openDayBtn').onclick=async()=>{await sb.from('blocked_dates').delete().eq('blocked_date',$('manageDate').value);await loadBlocked()};
+async function forceCloseDateSlots(d){
+ const {data,error}=await sb.rpc('admin_get_slots_v2',{p_start:d,p_end:d});if(error)throw error;
+ for(const s of data||[]){
+  const t=fmt(s.slot_time);
+  if(s.is_booked){
+   const {error:e}=await sb.rpc('admin_save_slot_v2',{p_date:d,p_time:t,p_open:false,p_note:s.note||null,p_allowed_services:s.allowed_services||[]});if(e)throw e
+  }else{
+   const {error:e}=await sb.rpc('admin_remove_slot_v2',{p_date:d,p_time:t});if(e)throw e
+  }
+ }
+}
+async function syncBlockedDatesToSlots(){
+ await loadBlocked();
+ const today=ymd(new Date()),future=[...new Set((blocked||[]).map(x=>x.blocked_date).filter(d=>d>=today))].sort();
+ for(const d of future)await forceCloseDateSlots(d)
+}
+$('closeDayBtn').onclick=async()=>{
+ const d=$('manageDate').value;if(!d)return;
+ try{
+  if(!blocked.some(x=>x.blocked_date===d))await sb.from('blocked_dates').insert({blocked_date:d,reason:'後台整天關閉'});
+  await forceCloseDateSlots(d);
+  await loadBlocked();await loadDay();await loadOverview();
+ }catch(e){alert('整天關閉失敗：'+e.message)}
+};
+$('openDayBtn').onclick=async()=>{await sb.from('blocked_dates').delete().eq('blocked_date',$('manageDate').value);await loadBlocked();await loadDay();await loadOverview()};
 function monthBounds(v){if(!v)return null;const [y,m]=v.split('-').map(Number),last=new Date(y,m,0).getDate();return {start:`${y}-${String(m).padStart(2,'0')}-01`,end:`${y}-${String(m).padStart(2,'0')}-${String(last).padStart(2,'0')}`,days:last}}
-$('closeMonthBtn').onclick=async()=>{const b=monthBounds($('manageMonth').value);if(!b)return;const existing=new Set(blocked.filter(x=>x.blocked_date>=b.start&&x.blocked_date<=b.end).map(x=>x.blocked_date)),rows=[];for(let d=1;d<=b.days;d++){const ds=b.start.slice(0,8)+String(d).padStart(2,'0');if(!existing.has(ds))rows.push({blocked_date:ds,reason:'後台整月關閉'})}if(rows.length)await sb.from('blocked_dates').insert(rows);await loadBlocked()};$('openMonthBtn').onclick=async()=>{const b=monthBounds($('manageMonth').value);if(!b)return;await sb.from('blocked_dates').delete().gte('blocked_date',b.start).lte('blocked_date',b.end);await loadBlocked()};
+$('closeMonthBtn').onclick=async()=>{
+ const b=monthBounds($('manageMonth').value);if(!b)return;
+ try{
+  const existing=new Set(blocked.filter(x=>x.blocked_date>=b.start&&x.blocked_date<=b.end).map(x=>x.blocked_date)),rows=[];
+  const dates=[];
+  for(let d=1;d<=b.days;d++){const ds=b.start.slice(0,8)+String(d).padStart(2,'0');dates.push(ds);if(!existing.has(ds))rows.push({blocked_date:ds,reason:'後台整月關閉'})}
+  if(rows.length)await sb.from('blocked_dates').insert(rows);
+  for(const ds of dates)await forceCloseDateSlots(ds);
+  await loadBlocked();await loadDay();await loadOverview();
+  alert('整月已關閉，前台舊時段也已同步清除。')
+ }catch(e){alert('整月關閉失敗：'+e.message)}
+};
+$('openMonthBtn').onclick=async()=>{const b=monthBounds($('manageMonth').value);if(!b)return;await sb.from('blocked_dates').delete().gte('blocked_date',b.start).lte('blocked_date',b.end);await loadBlocked();await loadDay();await loadOverview()};
 
 const OVERVIEW_SERVICES=['初步諮詢','現場丈量','設計會議'];
 function holidayInfo(ds){return ADMIN_HOLIDAYS_2026[ds]||''}
@@ -185,7 +221,7 @@ async function replaceServiceSchedule(){const dates=selectedBulkDates(),times=[.
 async function closeSelectedTimes(){const dates=selectedBulkDates(),times=[...document.querySelectorAll('.bulkTimeCheck:checked')].map(x=>x.value),sv=services('bulkSvc');if(!dates.length||!times.length||!sv.length)return alert('日期、服務、時間都至少選一個。');if(!confirm('確定關閉所選服務的所選時間？'))return;for(const d of dates){const {data}=await sb.rpc('admin_get_slots_v2',{p_start:d,p_end:d});for(const s of data||[]){const t=fmt(s.slot_time);if(!times.includes(t))continue;const next=(s.allowed_services||[]).filter(x=>!sv.includes(x));if(next.length)await sb.rpc('admin_save_slot_v2',{p_date:d,p_time:t,p_open:s.is_open,p_note:s.note||null,p_allowed_services:next});else if(s.is_booked)await sb.rpc('admin_save_slot_v2',{p_date:d,p_time:t,p_open:false,p_note:s.note||null,p_allowed_services:s.allowed_services||sv});else await sb.rpc('admin_remove_slot_v2',{p_date:d,p_time:t})}}alert('已關閉所選時段。');await loadDay();await loadBlocked();await loadOverview()}
 $('bulkApplyBtn').onclick=replaceServiceSchedule;$('bulkCloseBtn').onclick=closeSelectedTimes;
 async function loadAll(){await Promise.all([loadBookings(),loadBlocked(),loadSiteContent(),loadDay()])}
-async function init(){const {data:{session}}=await sb.auth.getSession();if(!session)return;$('loginView').classList.add('hidden');$('adminView').classList.remove('hidden');$('logoutBtn').classList.remove('hidden');$('who').textContent=session.user.email||'';const {data:ok}=await sb.rpc('is_admin');if(!ok){await sb.auth.signOut();return location.reload()}const today=ymd(new Date());$('manageDate').value=today;$('manageMonth').value=today.slice(0,7);$('bulkMonth').value=today.slice(0,7);$('overviewMonth').value=today.slice(0,7);renderBulkDates();renderBulkTimes();await loadAll();await loadOverview()}
+async function init(){const {data:{session}}=await sb.auth.getSession();if(!session)return;$('loginView').classList.add('hidden');$('adminView').classList.remove('hidden');$('logoutBtn').classList.remove('hidden');$('who').textContent=session.user.email||'';const {data:ok}=await sb.rpc('is_admin');if(!ok){await sb.auth.signOut();return location.reload()}const today=ymd(new Date());$('manageDate').value=today;$('manageMonth').value=today.slice(0,7);$('bulkMonth').value=today.slice(0,7);$('overviewMonth').value=today.slice(0,7);renderBulkDates();renderBulkTimes();await loadAll();try{await syncBlockedDatesToSlots()}catch(e){console.error('blocked-date sync failed',e)}await loadOverview()}
 $('manageDate').onchange=()=>{loadDay();renderDayState()};sb.auth.onAuthStateChange((e,s)=>{if(e==='SIGNED_IN'&&s)setTimeout(init,0)});init();
 
 const ADMIN_HOLIDAYS_2026={
