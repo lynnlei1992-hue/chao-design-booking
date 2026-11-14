@@ -240,7 +240,7 @@ function renderAdminHolidayCalendar(){
  const label=document.getElementById('adminCalLabel'),box=document.getElementById('adminCalDates');if(!label||!box)return;
  label.textContent=`${y} 年 ${m+1} 月`;let h='';
  for(let i=0;i<first;i++)h+='<div></div>';
- for(let d=1;d<=last;d++){const ds=`${y}-${pad2(m+1)}-${pad2(d)}`,dow=new Date(y,m,d).getDay(),weekend=dow===0||dow===6,holiday=ADMIN_HOLIDAYS_2026[ds];const dayBookings=bookings.filter(b=>b.booking_date===ds&&b.status!=='cancelled');const entries=dayBookings.map(b=>`<div class="admin-booking"><strong>${esc(b.project_name||'未填建案')}</strong><span>${esc(b.customer_name||'未填姓名')}</span></div>`).join('');h+=`<div class="admin-day${weekend?' weekend':''}${holiday?' holiday':''}">${d}${holiday?`<span class="admin-holiday-name">${holiday}</span>`:''}${entries}</div>`}
+ for(let d=1;d<=last;d++){const ds=`${y}-${pad2(m+1)}-${pad2(d)}`,dow=new Date(y,m,d).getDay(),weekend=dow===0||dow===6,holiday=ADMIN_HOLIDAYS_2026[ds];const dayBookings=bookings.filter(b=>b.booking_date===ds&&b.status!=='cancelled');const entries=dayBookings.map(b=>`<div class="admin-booking"><strong>${esc(b.project_name||'未填建案')}</strong><span>${esc(b.customer_name||'未填姓名')}｜${esc(b.service||'未填服務')}</span></div>`).join('');h+=`<div class="admin-day${weekend?' weekend':''}${holiday?' holiday':''}">${d}${holiday?`<span class="admin-holiday-name">${holiday}</span>`:''}${entries}</div>`}
  box.innerHTML=h;
 }
 document.getElementById('adminCalPrev')?.addEventListener('click',()=>{adminCalView=new Date(adminCalView.getFullYear(),adminCalView.getMonth()-1,1);renderAdminHolidayCalendar()});
