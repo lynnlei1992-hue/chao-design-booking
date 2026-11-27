@@ -150,12 +150,13 @@ function holidayInfo(ds){return ADMIN_HOLIDAYS_2026[ds]||''}
 async function loadAutoLimit(){const [settings,overrides]=await Promise.all([sb.from('booking_auto_settings').select('*').eq('id',true).maybeSingle(),sb.from('booking_date_overrides').select('*')]);if(settings.error||overrides.error){console.error(settings.error||overrides.error);return}autoLimitSettings=settings.data||{enabled:true,daily_limit:1};dateOverrides=overrides.data||[];$('autoLimitEnabled').checked=autoLimitSettings.enabled;$('autoLimitCount').value=String(autoLimitSettings.daily_limit);renderOverview()}
 $('saveAutoLimit').onclick=async()=>{const enabled=$('autoLimitEnabled').checked,daily_limit=Number($('autoLimitCount').value);const {error}=await sb.from('booking_auto_settings').upsert({id:true,enabled,daily_limit});if(error)return alert('儲存失敗：'+error.message);await loadAutoLimit();alert('全站自動預約上限已儲存')};
 window.toggleAutoOverride=async d=>{const active=dateOverrides.some(x=>x.booking_date===d&&x.allow_extra);if(!confirm(active?`確定讓 ${d} 恢復套用每日預約上限？`:`確定手動開放 ${d}，不受每日預約上限限制？`))return;const result=active?await sb.from('booking_date_overrides').delete().eq('booking_date',d):await sb.from('booking_date_overrides').upsert({booking_date:d,allow_extra:true});if(result.error)return alert('操作失敗：'+result.error.message);if(!active&&blocked.some(x=>x.blocked_date===d)){const x=await sb.from('blocked_dates').delete().eq('blocked_date',d);if(x.error)return alert('解除原本關閉日期失敗：'+x.error.message);await loadBlocked()}await loadAutoLimit();await loadOverview()};
+let overviewPublicSlots={},overviewRequest=0;
 async function loadOverview(){
  const v=$('overviewMonth').value;if(!v)return;
- const b=monthBounds(v);$('overviewRows').innerHTML='<tr><td colspan="6" class="muted">載入中…</td></tr>';
+ const request=++overviewRequest;const b=monthBounds(v);$('overviewRows').innerHTML='<tr><td colspan="6" class="muted">載入中…</td></tr>';
  const {data,error}=await sb.rpc('admin_get_slots_v2',{p_start:b.start,p_end:b.end});
  if(error){$('overviewRows').innerHTML='';return notice($('overviewNotice'),'總覽載入失敗：'+error.message,true)}
- overviewSlots=data||[];renderOverview()
+ const results=await Promise.all(OVERVIEW_SERVICES.map(async svc=>{const r=await sb.rpc('get_open_slots_v3',{p_start:b.start,p_end:b.end,p_service:svc});return [svc,r.error?null:r.data||[]]}));if(request!==overviewRequest)return;overviewPublicSlots=Object.fromEntries(results);overviewSlots=data||[];renderOverview()
 }
 function renderOverview(){
  const v=$('overviewMonth').value;if(!v)return;const [y,m]=v.split('-').map(Number),last=new Date(y,m,0).getDate(),names=['日','一','二','三','四','五','六'];
@@ -166,8 +167,8 @@ function renderOverview(){
   for(const svc of OVERVIEW_SERVICES){
    const rows=overviewSlots.filter(x=>String(x.slot_date)===ds&&(x.allowed_services||[]).includes(svc)&&x.is_open);
    const times=rows.map(x=>fmt(x.slot_time)).sort();
-   const booked=bookings.filter(b=>b.booking_date===ds&&b.service===svc&&b.status!=='cancelled').length;
-   h+=`<td class="overview-cell" data-odate="${ds}" data-osvc="${svc}">${times.length?`<div class="overview-times">${times.join('、')}</div>${booked?`<span class="overview-booked">已有 ${booked} 場預約</span>`:''}`:`<span class="overview-none">—</span>${booked?`<span class="overview-booked">已有 ${booked} 場預約</span>`:''}`}</td>`;
+   const booked=bookings.filter(b=>b.booking_date===ds&&b.service===svc&&b.status!=='cancelled').length;const publicRows=overviewPublicSlots[svc];const visible=Array.isArray(publicRows)?publicRows.filter(x=>String(x.slot_date)===ds).map(x=>fmt(x.slot_time)).sort():null;const status=times.length?(visible===null?'前台讀取失敗':visible.length?'前台可約：'+visible.join('、'):'前台不可約（預約規則限制）'):'';
+   h+=`<td class="overview-cell" data-odate="${ds}" data-osvc="${svc}">${times.length?`<div class="overview-times">${times.join('、')}</div><div class="muted" style="font-size:11px">${esc(status)}</div>${booked?`<span class="overview-booked">已有 ${booked} 場預約</span>`:''}`:`<span class="overview-none">—</span>${booked?`<span class="overview-booked">已有 ${booked} 場預約</span>`:''}`}</td>`;
   }const closed=blocked.some(x=>x.blocked_date===ds);const manualExtra=dateOverrides.some(x=>x.booking_date===ds&&x.allow_extra);h+=`<td><button type="button" class="small ${closed?'ghost':'danger'}" onclick="toggleBookingDay('${ds}')">${closed?'重新開放':'關閉當日'}</button>${closed?'<div class="muted" style="font-size:11px">已關閉新預約</div>':''}</td><td><button type="button" class="small ghost" onclick="toggleAutoOverride('${ds}')">${manualExtra?'恢復自動限制':'手動開放（不受上限）'}</button></td></tr>`;
  }
  $('overviewRows').innerHTML=h;
